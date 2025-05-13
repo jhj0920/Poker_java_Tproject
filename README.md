@@ -1,2 +1,2 @@
-# Poker_java_Tproject
+# Poker_java_TermProject
 test_poker
