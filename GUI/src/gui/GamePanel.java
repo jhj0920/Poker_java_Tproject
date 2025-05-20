@@ -31,9 +31,9 @@ public class GamePanel extends JPanel {
         playerCardsPanel.add(PCardsGroup);
 		
 		// Import images for player cards
-		JLabel playerCard1 = new JLabel(CardImageLoader.getCard("card_back_black"));
+		JLabel playerCard1 = new JLabel(CardImageLoader.getCard("card_back"));
 		PCardsGroup.add(playerCard1);
-		JLabel playerCard2 = new JLabel(CardImageLoader.getCard("card_back_red"));
+		JLabel playerCard2 = new JLabel(CardImageLoader.getCard("card_back"));
 		PCardsGroup.add(playerCard2);
 		
 		// Create a button to start the game
