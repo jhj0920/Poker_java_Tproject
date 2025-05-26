@@ -2,10 +2,10 @@ package gui;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class Card {
-	private final String frontCard; // e.g., "ace_of_hearts"
-	private final JLabel cardLabel; // JLabel to display the card image
-	private boolean isFaceUp; // Flag to check if the card is face up
+public class Card extends JLabel {
+	protected final String frontCard; // e.g., "ace_of_hearts"
+	protected final JLabel cardLabel; // JLabel to display the card image
+	protected boolean isFaceUp; // Flag to check if the card is face up
 	
 	public Card(String frontCard) {
 		this.frontCard = frontCard;

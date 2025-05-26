@@ -5,6 +5,8 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
+// Should I reduce the size of the card images to improve performance?
+
 public class CardImageLoader {
 
     private static final String[] SUITS = {"clubs", "diamonds", "hearts", "spades"};
