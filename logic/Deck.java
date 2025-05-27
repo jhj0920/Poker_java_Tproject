@@ -1,5 +1,3 @@
-package logic;
-
 import java.util.*;
 
 public class Deck {
@@ -11,18 +9,19 @@ public class Deck {
                 cards.add(new Card(suit, rank));
             }
         }
+        shuffle();
     }
 
     public void shuffle() {
         Collections.shuffle(cards);
     }
 
-    public Card draw() {
-        if (cards.isEmpty()) throw new RuntimeException("덱이 비었습니다.");
+    public Card dealCard() {
+        if (cards.isEmpty()) throw new IllegalStateException("덱이 비었습니다.");
         return cards.remove(0);
     }
 
-    public int size() {
+    public int remainingCards() {
         return cards.size();
     }
 }

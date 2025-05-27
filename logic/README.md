@@ -1,7 +1,5 @@
 # logic 폴더
 
-텍사스 홀덤 포커 게임에서의 핵심 게임 로직을 포함하는 패키지입니다.
-
 ---
 
 ## 포함된 클래스
@@ -9,33 +7,26 @@
 ### 1. `Card.java`
 - 포커 카드 클래스
 - 슈트(Suit)와 랭크(Rank)를 Enum으로 구성
-- 안전한 문자열(HEART, SPADE 등) 기반 출력
+- 한글로 카드 정보 출력 (예: `하트 A`, `클로버 10`)
 
 ### 2. `Deck.java`
-- 카드 52장을 초기화하고 섞는 덱 클래스
+- 카드 52장을 초기화하고 셔플하는 덱 클래스
 - `shuffle()` : 덱을 섞음
-- `draw()` : 카드 한 장 꺼냄
+- `dealCard()` : 카드 한 장 꺼냄
 
-### 3. `GameState.java`
-- 플레이어 핸드 및 커뮤니티 카드 관리
-- `Map<String, List<Card>> playerHands`로 플레이어 별 카드 저장
-- 커뮤니티 카드 5장 생성 포함
+### 3. `Hand.java`
+- 플레이어의 패(손에 든 카드) 관리
+- 최대 5장까지 추가 가능
+- `sort()`로 높은 순서대로 정렬
+- `toString()`은 패를 한글로 출력
 
-### 4. `TestDeal.java`
-- 위 클래스들을 테스트하는 main 메서드 제공
-- 콘솔에 핸드 및 커뮤니티 카드 출력
-
----
-
-## 향후 추가될 클래스 (예정)
-
-- `PokerHandEvaluator.java` : 족보 판별 알고리즘
-- `TurnManager.java` : 턴 흐름, 베팅, 콜, 폴드 관리
+### 4. `HandEvaluator.java`
+- 패의 족보를 판단하는 클래스
+- 결과 예시: `HIGH_CARD`, `TWO_PAIR`, `FLUSH`, `FULL_HOUSE`, ...
 
 ---
 
-## 사용 예시 (테스트 실행)
+## 테스트
+- Main.java 실행을 통하여 logic 테스트 가능
+- 플레이어의 카드 5장을 뽑고 결과를 출력하고 카드 정렬 후 다시 한 번 결과를 출력한뒤 패의 족보를 판단해 출력한다.
 
-```bash
-javac logic/*.java
-java logic.TestDeal
