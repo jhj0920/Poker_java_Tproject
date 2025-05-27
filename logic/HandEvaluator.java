@@ -1,3 +1,5 @@
+// 주어진 핸드(5장 이상)에서 족보를 판별하는 클래스
+
 import java.util.*;
 
 public class HandEvaluator {
@@ -37,6 +39,7 @@ public class HandEvaluator {
             return HandRank.HIGH_CARD;
     }
 
+    // 플러시 여부
     private static boolean isFlush(List<Card> cards) {
         Card.Suit suit = cards.get(0).getSuit();
         for (Card c : cards) {
@@ -45,6 +48,7 @@ public class HandEvaluator {
         return true;
     }
 
+    // 스트레이트 여부
     private static boolean isStraight(List<Card> cards) {
         List<Integer> ordinals = new ArrayList<>();
         for (Card c : cards) {
@@ -59,6 +63,7 @@ public class HandEvaluator {
         return true;
     }
 
+    // 랭크 개수 맵 생성
     private static Map<Card.Rank, Integer> getRankCountMap(List<Card> cards) {
         Map<Card.Rank, Integer> map = new HashMap<>();
         for (Card c : cards) {
@@ -67,14 +72,17 @@ public class HandEvaluator {
         return map;
     }
 
+    // 특정 개수의 같은 숫자가 있는지 확인
     private static boolean hasNOfAKind(Map<Card.Rank, Integer> rankMap, int n) {
         return rankMap.values().contains(n);
     }
 
+    // 풀하우스 여부
     private static boolean hasFullHouse(Map<Card.Rank, Integer> rankMap) {
         return rankMap.values().contains(3) && rankMap.values().contains(2);
     }
 
+    // 투페어 여부
     private static boolean hasTwoPair(Map<Card.Rank, Integer> rankMap) {
         int pairCount = 0;
         for (int count : rankMap.values()) {
