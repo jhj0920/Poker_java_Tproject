@@ -1,27 +1,78 @@
-// 테스트 실행 클래스
-
+// 포커 게임 메인 실행 클래스
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("덱 생성 및 셔플 테스트");
-        Deck deck = new Deck();
-        System.out.println("남은 카드 수: " + deck.remainingCards());
+        Scanner scanner = new Scanner(System.in);
 
-        System.out.println("\n플레이어 핸드 구성");
-        Hand playerHand = new Hand();
-        for (int i = 0; i < 5; i++) {
-            playerHand.addCard(deck.dealCard());
+        // 1. 플레이어 생성 및 초기화 ($10,000 지급)
+        List<Player> players = new ArrayList<>();
+        players.add(new Player("철수", 10000));
+        players.add(new Player("영희", 10000));
+        players.add(new Player("민수", 10000));
+        players.add(new Player("지은", 10000));
+
+        GameManager gameManager = new GameManager(players);
+        gameManager.startNewRound();
+
+        // 2. 프리플랍 - 패 공개
+        System.out.println("\n[프리플랍] 플레이어들의 패:");
+        for (Player p : players) {
+            if (!p.isFolded()) {
+                System.out.println(p.getName() + "의 핸드:");
+                System.out.print(p.getHand());
+            }
         }
-        System.out.println(playerHand);
 
-        System.out.println("핸드 정렬 후");
-        playerHand.sort();
-        System.out.println(playerHand);
+        // 3. 프리플랍 베팅 라운드
+        BettingRoundManager.runBettingRound(players, gameManager.getPot(), scanner);
 
-        System.out.println("핸드 평가");
-        List<Card> handCards = playerHand.getCards();
-        HandEvaluator.HandRank rank = HandEvaluator.evaluateHand(handCards);
-        System.out.println("현재 핸드 족보: " + rank);
+        // 4. FLOP (커뮤니티 카드 3장 공개)
+        gameManager.nextPhase();
+        printCommunityCards(gameManager);
+        BettingRoundManager.runBettingRound(players, gameManager.getPot(), scanner);
+
+        // 5. TURN (1장 추가)
+        gameManager.nextPhase();
+        printCommunityCards(gameManager);
+        BettingRoundManager.runBettingRound(players, gameManager.getPot(), scanner);
+
+        // 6. RIVER (1장 추가)
+        gameManager.nextPhase();
+        printCommunityCards(gameManager);
+        BettingRoundManager.runBettingRound(players, gameManager.getPot(), scanner);
+
+        // 7. 쇼다운
+        gameManager.nextPhase();
+        System.out.println("\n[쇼다운] 남아있는 플레이어의 핸드:");
+        for (Player p : players) {
+            if (!p.isFolded()) {
+                System.out.println(p.getName() + "의 핸드:");
+                System.out.print(p.getHand());
+            }
+        }
+
+        System.out.println("\n커뮤니티 카드:");
+        for (Card c : gameManager.getCommunityCards()) {
+            System.out.println(c);
+        }
+
+        // 8. 승자 판단 및 팟 분배
+        HandEvaluator.determineWinner(players, gameManager.getCommunityCards(), gameManager.getPot());
+
+        // 9. 최종 칩 현황
+        System.out.println("\n[최종 칩 현황]");
+        for (Player p : players) {
+            System.out.println(p.getName() + ": $" + p.getChips());
+        }
+
+        scanner.close();
+    }
+
+    private static void printCommunityCards(GameManager gameManager) {
+        System.out.println("\n[" + gameManager.getState() + "] 커뮤니티 카드:");
+        for (Card c : gameManager.getCommunityCards()) {
+            System.out.println(c);
+        }
     }
 }
