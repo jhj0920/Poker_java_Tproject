@@ -4,16 +4,11 @@ import java.util.*;
 
 public class BettingRoundManager {
 
-    /**
-     * 한 베팅 라운드를 진행한다. 각 플레이어는 순서대로 액션을 선택하고,
-     * 현재 베팅 금액에 맞춰 콜, 레이즈, 폴드, 체크, 올인을 할 수 있다.
-     * @param players 참여 중인 플레이어 목록
-     * @param pot 현재 팟 객체
-     * @param scanner 사용자 입력용 Scanner
-     */
     public static void runBettingRound(List<Player> players, Pot pot, Scanner scanner) {
         int currentBet = 0;
+        int lastRaiseAmount = 0;
         boolean bettingFinished = false;
+        boolean allInOccurred = false;
 
         Map<Player, Integer> bets = new HashMap<>();
         for (Player p : players) {
@@ -25,6 +20,7 @@ public class BettingRoundManager {
 
             for (Player player : players) {
                 if (player.isFolded()) continue;
+                if (player.getChips() == 0) continue;
 
                 int toCall = currentBet - bets.get(player);
                 boolean validInput = false;
@@ -37,7 +33,7 @@ public class BettingRoundManager {
                     int choice = scanner.nextInt();
 
                     switch (choice) {
-                        case 1 -> { // 콜
+                        case 1 -> {
                             if (toCall == 0) {
                                 System.out.println("콜할 금액이 없습니다. 체크 또는 레이즈만 가능합니다.");
                             } else {
@@ -48,30 +44,37 @@ public class BettingRoundManager {
                                 validInput = true;
                             }
                         }
-                        case 2 -> { // 레이즈
-                            System.out.print("얼마를 레이즈 하시겠습니까? > ");
-                            int raise = scanner.nextInt();
-                            int totalBet = toCall + raise;
+                        case 2 -> {
+                            int minRaise = lastRaiseAmount == 0 ? currentBet * 2 : currentBet + lastRaiseAmount;
+                            int raiseTo = 0;
+                            System.out.print("얼마까지 베팅하시겠습니까? (최소 $" + minRaise + ") > ");
+                            raiseTo = scanner.nextInt();
+                            int raiseAmount = raiseTo - bets.get(player);
 
-                            if (totalBet > player.getChips()) {
+                            if (raiseTo < minRaise) {
+                                System.out.println("최소 레이즈 금액은 이전 베팅보다 최소 2배 이상이어야 합니다. 다시 입력해주세요.");
+                                break;
+                            }
+                            if (raiseAmount > player.getChips()) {
                                 System.out.println("보유한 칩보다 많은 금액을 베팅할 수 없습니다. 다시 입력해주세요.");
                                 break;
                             }
 
-                            currentBet += raise;
-                            pot.addChips(player, totalBet);
-                            player.setChips(player.getChips() - totalBet);
-                            bets.put(player, currentBet);
+                            currentBet = raiseTo;
+                            lastRaiseAmount = raiseTo - currentBet;
+                            pot.addChips(player, raiseAmount);
+                            player.setChips(player.getChips() - raiseAmount);
+                            bets.put(player, raiseTo);
                             bettingFinished = false;
-                            System.out.println(player.getName() + "이(가) $" + raise + " 레이즈하였습니다.");
+                            System.out.println(player.getName() + "이(가) $" + raiseAmount + " 레이즈하였습니다.");
                             validInput = true;
                         }
-                        case 3 -> { // 폴드
+                        case 3 -> {
                             player.fold();
                             System.out.println(player.getName() + "이(가) 폴드하였습니다.");
                             validInput = true;
                         }
-                        case 4 -> { // 체크
+                        case 4 -> {
                             if (toCall == 0) {
                                 System.out.println(player.getName() + "이(가) 체크하였습니다.");
                                 validInput = true;
@@ -79,7 +82,7 @@ public class BettingRoundManager {
                                 System.out.println("체크할 수 없습니다. 콜 또는 폴드하세요.");
                             }
                         }
-                        case 5 -> { // 올인
+                        case 5 -> {
                             int allInAmount = player.getChips();
                             if (allInAmount <= 0) {
                                 System.out.println("올인할 수 있는 칩이 없습니다.");
@@ -90,16 +93,20 @@ public class BettingRoundManager {
                             player.setChips(0);
                             bets.put(player, totalBetAllIn);
                             if (totalBetAllIn > currentBet) {
+                                lastRaiseAmount = totalBetAllIn - currentBet;
                                 currentBet = totalBetAllIn;
                                 bettingFinished = false;
                             }
                             System.out.println(player.getName() + "이(가) $" + allInAmount + " 올인하였습니다.");
                             validInput = true;
+                            allInOccurred = true;
                         }
                         default -> System.out.println("잘못된 입력입니다. 다시 선택해주세요.");
                     }
                 }
             }
+
+            if (allInOccurred) break;
         }
     }
 }
