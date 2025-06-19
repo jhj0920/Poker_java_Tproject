@@ -91,6 +91,9 @@ public class MatchmakingClientGUI extends JFrame {
         String serverIp = "localhost"; // Replace with the server's IP address in the future
         int serverPort = 8888;
 
+        // Use SwingUtilities.invokeLater to ensure that the GUI is created on the Event Dispatch Thread
+        // Event Dispatch Thread is responsible for handling GUI events in Swing applications
+        // This ensures that the GUI is responsive and avoids potential threading issues
         SwingUtilities.invokeLater(() -> new MatchmakingClientGUI(serverIp, serverPort));
     }
 }
