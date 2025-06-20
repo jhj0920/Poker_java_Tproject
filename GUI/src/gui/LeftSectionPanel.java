@@ -3,6 +3,12 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A panel representing the left section of the game GUI.
+ * This panel contains player cards and is designed to be used in a card game interface.
+ * It extends BaseSectionPanel to inherit common properties and methods.
+ * @returns A JPanel that displays player cards in the left section of the game GUI.
+ */
 public class LeftSectionPanel extends BaseSectionPanel{
 	private static final Dimension PANEL_SIZE = new Dimension(170, 0); // Example size, adjust as needed
 	

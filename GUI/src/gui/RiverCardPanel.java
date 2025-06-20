@@ -5,6 +5,14 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+/**
+ * A panel representing the river cards in a card game.
+ * This class extends CardPanel to provide a specific implementation for displaying river cards.
+ * It initializes multiple cards with specified images and a background color.
+ * @param cardImages A list of image paths for the river cards.
+ * @param backgroundColor The background color for the card panel.
+ * @returns A JPanel that displays river cards with the specified images and background color.
+ */
 public class RiverCardPanel extends CardPanel {
     private List<String> cardImages;
 

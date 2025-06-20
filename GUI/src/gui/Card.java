@@ -2,6 +2,13 @@ package gui;
 import javax.swing.*;
 import java.awt.event.*;
 
+/* 
+ * Represents a playing card in the GUI.
+ * The card can be flipped to show its front or back image.
+ * Clicking on the card toggles its face-up state.
+ * @param frontCard The identifier for the front image of the card (e.g., "ace_of_hearts").
+ * @returns A JLabel that displays the card image.
+ */
 public class Card extends JLabel {
 	protected final String frontCard; // e.g., "ace_of_hearts"
 	protected final JLabel cardLabel; // JLabel to display the card image

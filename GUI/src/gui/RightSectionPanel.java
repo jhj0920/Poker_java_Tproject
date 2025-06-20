@@ -3,6 +3,12 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A panel representing the right section of the game GUI.
+ * This class extends BaseSectionPanel to provide a specific implementation for displaying player cards.
+ * It initializes a player card panel with two cards and adds it to the right side of the section.
+ * * @returns A JPanel that displays player cards in the right section of the game GUI.
+ */
 public class RightSectionPanel extends BaseSectionPanel {
 	private static final Dimension PANEL_SIZE = new Dimension(170, 0); // Example size, adjust as needed
 

@@ -3,6 +3,13 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A panel representing the top section of the game GUI.
+ * This class extends BaseSectionPanel to provide a specific implementation for the top section,
+ * including player cards and a balance panel.
+ * * It initializes a player card panel with two cards and a balance panel displaying the player's balance.
+ * * @returns A JPanel that displays player cards and a balance panel in the top section of the game GUI.
+ */
 public class TopSectionPanel extends BaseSectionPanel {
     private static final Dimension BALANCE_PANEL_SIZE = new Dimension(150, 50);
     private static final Font BALANCE_FONT = new Font("Arial", Font.BOLD, 16);

@@ -2,6 +2,10 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Main class to create and display the game GUI.
+ * This class initializes the main frame and adds the GamePanel to it.
+ */
 public class GameGUI {
 	public static void main(String[] args) {
 		// Create the main frame

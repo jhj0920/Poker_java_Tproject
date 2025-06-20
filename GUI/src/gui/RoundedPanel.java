@@ -3,6 +3,13 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * A JPanel that provides a rounded corner effect.
+ * This class extends JPanel and overrides the paintComponent method to draw a rounded rectangle.
+ * It is useful for creating panels with a visually appealing rounded corner design.
+ * @param cornerRadius The radius of the corners for the rounded rectangle.
+ * * @returns A JPanel with rounded corners.
+ */
 public class RoundedPanel extends JPanel {
     private int cornerRadius;
 

@@ -4,6 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * JPanel that represents the bottom section of the game GUI.
+ * Contains the player's cards and action buttons for starting the game and performing actions like Call, Raise, Fold, and All In.
+ * @returns A JPanel with the player's cards and action buttons.
+ */
 public class BottomSectionPanel extends BaseSectionPanel {
 	private static final Dimension START_BUTTON_SIZE = new Dimension(150, 50);
 	private static final Dimension BUTTON_SIZE = new Dimension(100, 50);

@@ -5,8 +5,12 @@ import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-// Should I reduce the size of the card images to improve performance?
-
+/**
+ * Utility class that loads and provides access to card images.
+ * It preloads all card images into a HashMap for quick retrieval.
+ * The images are resized to a standard size for consistent display.
+ * @return A static method to retrieve card images by their names (e.g., "ace_of_spades").
+ */
 public class CardImageLoader {
 
     private static final String[] SUITS = {"clubs", "diamonds", "hearts", "spades"};

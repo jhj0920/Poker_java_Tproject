@@ -2,8 +2,13 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
-// Need to refactor GamePanel to organize the layout and components for a Texas Hold'em Poker game GUI.
 
+/**
+ * GamePanel is the main panel for the poker game GUI.
+ * It organizes the layout into sections for players, center actions, and game controls.
+ * Each section is represented by a dedicated panel class.
+ * @returns A JPanel that serves as the main game interface, containing all sections of the poker game.
+ */
 public class GamePanel extends JPanel {
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
     

@@ -4,6 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 
+/**
+ * A panel that represents the center section of a Texas Hold'em Poker game GUI.
+ * It contains the river cards and the pot display.
+ * This class extends BaseSectionPanel to inherit common properties and methods for section panels.
+ * @return A JPanel that displays the river cards and the pot amount.
+ */
 public class CenterSectionPanel extends BaseSectionPanel{
 		private static final Dimension POT_PANEL_SIZE = new Dimension(200, 100);
 	    private static final Font POT_FONT = new Font("Arial", Font.BOLD, 16);
@@ -39,6 +45,11 @@ public class CenterSectionPanel extends BaseSectionPanel{
 		add(centerContainer, BorderLayout.CENTER); // Add center container to the center section
 	}
 	
+	/**
+	 * Creates a panel to display the pot amount.
+	 * This panel is styled with a rounded border and contains a label showing the pot amount.
+	 * @return A JPanel containing the pot display.
+	 */
 	private JPanel createPotPanel() {
 		RoundedPanel potPanel = new RoundedPanel(20);
 		potPanel.setLayout(new GridBagLayout());
