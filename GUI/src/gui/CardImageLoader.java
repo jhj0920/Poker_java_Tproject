@@ -32,8 +32,7 @@ public class CardImageLoader {
 	            }
 	        }
 	        // Load back of card image
-            cardImages.put("card_back_black", loadResizedIcon("/gui/cards/card_back_black.png"));
-            cardImages.put("card_back_red", loadResizedIcon("/gui/cards/card_back_red.png"));
+	        cardImages.put("card_back", loadResizedIcon("/gui/cards/card_back.png"));
     	} catch (Exception e) {
     		 e.printStackTrace();
     	}

@@ -12,7 +12,7 @@ public class GameGUI {
 		frame.getContentPane().add(panel);
 		frame.setTitle("Texas Hold'em Poker"); 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(800, 600);
+		frame.setSize(1000, 750);
 		
 		// Set the frame to be visible
 		frame.setVisible(true);
