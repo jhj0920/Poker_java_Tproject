@@ -177,9 +177,19 @@ public class GamePanel extends JPanel {
         playerCardsPanel.add(PCardsGroup);
         southContainer.add(playerCardsPanel, BorderLayout.CENTER);
 		
+        // Create a panel for the player actions
+        JPanel playerActionsPanel = new JPanel();
+        playerActionsPanel.setLayout(new GridBagLayout());
+        playerActionsPanel.setBackground(getBackground());
 		// Create a button to start the game
 		JButton startButton = new JButton("Start Game");
-		southContainer.add(startButton, BorderLayout.SOUTH);
+		startButton.setLayout(new GridBagLayout());
+		startButton.setPreferredSize(new Dimension(150, 50));
+		playerActionsPanel.add(startButton, new GridBagConstraints());
+		
+		
+		// Add the player actions panel to the south container
+		southContainer.add(playerActionsPanel, BorderLayout.SOUTH);
 		
 		 // Add the south container to the south border
         add(southContainer, BorderLayout.SOUTH);
@@ -188,7 +198,85 @@ public class GamePanel extends JPanel {
 		
 		startButton.addActionListener(e -> {
 			// Add game logic here
+		    // Clear the playerActionsPanel
+		    playerActionsPanel.removeAll();
+
+		    // Create the "Call" button
+		    JButton callButton = new JButton("Call");
+		    callButton.setPreferredSize(new Dimension(100, 50));
+		    callButton.addActionListener(event -> {
+		        // Add logic for "Call" action
+		        System.out.println("Call action triggered");
+		    });
+		    playerActionsPanel.add(callButton, new GridBagConstraints());
+
+		    // Create the "Raise" button
+		    JButton raiseButton = new JButton("Raise");
+		    raiseButton.setPreferredSize(new Dimension(100, 50));
+		    raiseButton.addActionListener(event -> {
+		        // Create a dialog for the raise slider
+		        JDialog raiseDialog = new JDialog((Frame) null, "Raise Amount", true);
+		        raiseDialog.setLayout(new BorderLayout());
+		        raiseDialog.setSize(300, 150);
+		        raiseDialog.setLocationRelativeTo(null); // Center the dialog on the screen
+
+		        // Create a label to display the current raise amount
+		        JLabel raiseLabel = new JLabel("Raise Amount: $0", JLabel.CENTER);
+		        raiseLabel.setFont(new Font("Arial", Font.BOLD, 16));
+		        raiseDialog.add(raiseLabel, BorderLayout.NORTH);
+
+		        // Create a slider for selecting the raise amount
+		        JSlider raiseSlider = new JSlider(0, 1000, 0); // Min: 0, Max: 1000, Initial: 0
+		        raiseSlider.setMajorTickSpacing(200);
+		        raiseSlider.setMinorTickSpacing(50);
+		        raiseSlider.setPaintTicks(true);
+		        raiseSlider.setPaintLabels(true);
+		        raiseDialog.add(raiseSlider, BorderLayout.CENTER);
+
+		        // Add a listener to update the label as the slider value changes
+		        raiseSlider.addChangeListener(e2 -> {
+		            int raiseAmount = raiseSlider.getValue();
+		            raiseLabel.setText("Raise Amount: $" + raiseAmount);
+		        });
+		        
+
+		        // Add a button to confirm the raise amount
+		        JButton confirmButton = new JButton("Confirm");
+		        confirmButton.addActionListener(confirmEvent -> {
+		            int raiseAmount = raiseSlider.getValue();
+		            System.out.println("Raise confirmed: $" + raiseAmount);
+		            raiseDialog.dispose(); // Close the dialog
+		        });
+		        raiseDialog.add(confirmButton, BorderLayout.SOUTH);
+
+		        // Show the dialog
+		        raiseDialog.setVisible(true);
+		    });
+		    playerActionsPanel.add(raiseButton, new GridBagConstraints());
+
+		    // Create the "Fold" button
+		    JButton foldButton = new JButton("Fold");
+		    foldButton.setPreferredSize(new Dimension(100, 50));
+		    foldButton.addActionListener(event -> {
+		        // Add logic for "Fold" action
+		        System.out.println("Fold action triggered");
+		    });
+		    playerActionsPanel.add(foldButton, new GridBagConstraints());
+
+		    // Create the "All In" button
+		    JButton allInButton = new JButton("All In");
+		    allInButton.setPreferredSize(new Dimension(100, 50));
+		    allInButton.addActionListener(event -> {
+		        // Add logic for "All In" action
+		        System.out.println("All In action triggered");
+		    });
+		    playerActionsPanel.add(allInButton, new GridBagConstraints());
+
+		    // Refresh the panel to display the new buttons
+		    playerActionsPanel.revalidate();
+		    playerActionsPanel.repaint();
 		});
+		
 		
 	}
 }
