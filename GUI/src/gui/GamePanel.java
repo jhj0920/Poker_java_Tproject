@@ -3,66 +3,18 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 // Need to refactor GamePanel to organize the layout and components for a Texas Hold'em Poker game GUI.
-// increase the frame size to accommodate the game layout
 
 public class GamePanel extends JPanel {
+    private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
+    
 	public GamePanel() {
-		// Set the background color
-		setBackground(new Color(0, 128, 0)); // Green color for the poker table
-		// Set the layout manager
+		setBackground(TABLE_COLOR);
 		setLayout(new BorderLayout());
 		
-		 // Create a container for the top section
-        JPanel topContainer = new JPanel(new GridBagLayout());
-        topContainer.setBackground(getBackground());
-        add(topContainer, BorderLayout.NORTH);
+		// ---------------- Top Section (Player 2, Balance) ----------------
+        TopSectionPanel topSectionPanel = new TopSectionPanel();
+        add(topSectionPanel, BorderLayout.NORTH);
         
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.NONE;
-        gbc.weightx = 1.0;
-        gbc.weighty = 1.0;
-		
-		// Create a panel for player 2 (TOP)
-		JPanel player2Cards = new JPanel();
-		player2Cards.setBackground(getBackground());
-		gbc.gridx = 1; // Center horizontally
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
-		topContainer.add(player2Cards, gbc);
-		
-		// Create a container for the player 2
-		JPanel p2CardsGroup = new JPanel();
-		p2CardsGroup.setBackground(getBackground());
-		player2Cards.add(p2CardsGroup);
-		
-		Card player2Card1 = new Card("card_back"); // Example card, replace with actual game logic
-		p2CardsGroup.add(player2Card1.getCardLabel());
-		Card player2Card2 = new Card("card_back"); // Example card, replace with actual game logic
-		p2CardsGroup.add(player2Card2.getCardLabel());
-		
-		// Panel for player's balance
-		RoundedPanel balancePanel = new RoundedPanel(20);
-		balancePanel.setLayout(new GridBagLayout()); // Change layout to GridBagLayout
-		balancePanel.setPreferredSize(new Dimension(150, 50)); // Set fixed size for the panel
-		balancePanel.setBackground(Color.DARK_GRAY); // Dark background for the balance panel
-
-		// Add content to the top-right panel (example: a label)
-		JLabel balanceLabel = new JLabel("Balance: $1000"); // Example balance, replace with actual game logic
-		balanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		balanceLabel.setForeground(Color.WHITE); // Set text color for visibility
-		// GridBagConstraints for the label to be centered in the panel
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.CENTER; // Center the label
-		balancePanel.add(balanceLabel, gbc);
-
-		// Add the top-right panel to the NORTH position
-		gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.NORTHEAST;
-		topContainer.add(balancePanel, gbc);
-
-		
 		// Create a panel for player 1 (LEFT)
         // ---------------- Player 1 (Left, Bottom-Aligned) ----------------
         JPanel player1CardsContainer = new JPanel();
