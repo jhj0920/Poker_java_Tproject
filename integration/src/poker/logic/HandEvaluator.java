@@ -49,14 +49,14 @@ public class HandEvaluator {
 	 * @param community 커뮤니티 카드 목록
 	 * @param pot 판돈 객체
 	 */
-    public static void determineWinner(List<Player> players, List<Card> community, Pot pot) {
+    public static void determineWinner(List<Player> players, List<logicCard> community, Pot pot) {
         Map<Player, HandValue> handMap = new HashMap<>();
         HandValue bestHand = null;
 
         for (Player player : players) {
             if (player.isFolded()) continue;
 
-            List<Card> total = new ArrayList<>(community);
+            List<logicCard> total = new ArrayList<>(community);
             total.addAll(player.getHand().getCards());
             HandValue hv = evaluateBestHand(total);
             handMap.put(player, hv);
@@ -97,11 +97,11 @@ public class HandEvaluator {
      * @param cards the list of cards to evaluate
      * @return HandValue representing the best hand and its rank
      */
-    public static HandValue evaluateBestHand(List<Card> cards) {
-        List<List<Card>> combinations = generateFiveCardCombinations(cards);
+    public static HandValue evaluateBestHand(List<logicCard> cards) {
+        List<List<logicCard>> combinations = generateFiveCardCombinations(cards);
         HandValue best = null;
 
-        for (List<Card> combo : combinations) {
+        for (List<logicCard> combo : combinations) {
             HandValue hv = evaluateHand(combo);
             if (best == null || hv.compareTo(best) > 0) {
                 best = hv;
@@ -116,19 +116,19 @@ public class HandEvaluator {
 	 * @param cards the list of cards to evaluate
 	 * @return HandValue representing the best hand and its rank
 	 */
-    public static HandValue evaluateHand(List<Card> cards) {
-        List<Card> sorted = new ArrayList<>(cards);
+    public static HandValue evaluateHand(List<logicCard> cards) {
+        List<logicCard> sorted = new ArrayList<>(cards);
         sorted.sort(Comparator.comparingInt(c -> c.getRank().ordinal()));
         Collections.reverse(sorted);
 
-        Map<Card.Rank, Integer> rankMap = getRankCountMap(sorted);
+        Map<logicCard.Rank, Integer> rankMap = getRankCountMap(sorted);
         boolean isFlush = isFlush(sorted);
         boolean isStraight = isStraight(sorted);
 
         List<Integer> values = new ArrayList<>();
-        for (Card c : sorted) values.add(c.getRank().ordinal());
+        for (logicCard c : sorted) values.add(c.getRank().ordinal());
 
-        if (isFlush && isStraight && sorted.get(0).getRank() == Card.Rank.ACE)
+        if (isFlush && isStraight && sorted.get(0).getRank() == logicCard.Rank.ACE)
             return new HandValue(HandRank.ROYAL_FLUSH, values);
         else if (isFlush && isStraight)
             return new HandValue(HandRank.STRAIGHT_FLUSH, values);
@@ -155,9 +155,9 @@ public class HandEvaluator {
 	 * @param cards the list of cards to check
 	 * @return true if all cards have the same suit, false otherwise
 	 */
-    private static boolean isFlush(List<Card> cards) {
-        Card.Suit suit = cards.get(0).getSuit();
-        for (Card c : cards) if (c.getSuit() != suit) return false;
+    private static boolean isFlush(List<logicCard> cards) {
+        logicCard.Suit suit = cards.get(0).getSuit();
+        for (logicCard c : cards) if (c.getSuit() != suit) return false;
         return true;
     }
 
@@ -166,9 +166,9 @@ public class HandEvaluator {
      * @param cards the list of cards to check
      * @return true if the hand contains a straight, false otherwise
      */
-    private static boolean isStraight(List<Card> cards) {
+    private static boolean isStraight(List<logicCard> cards) {
         Set<Integer> ranks = new TreeSet<>();
-        for (Card c : cards) ranks.add(c.getRank().ordinal());
+        for (logicCard c : cards) ranks.add(c.getRank().ordinal());
 
         if (ranks.contains(12) && ranks.contains(0) && ranks.contains(1) &&
             ranks.contains(2) && ranks.contains(3)) return true; // A-2-3-4-5
@@ -193,9 +193,9 @@ public class HandEvaluator {
      * @param cards the list of cards to analyze
      * @return a map where keys are card ranks and values are their counts
      */
-    private static Map<Card.Rank, Integer> getRankCountMap(List<Card> cards) {
-        Map<Card.Rank, Integer> map = new HashMap<>();
-        for (Card c : cards) map.put(c.getRank(), map.getOrDefault(c.getRank(), 0) + 1);
+    private static Map<logicCard.Rank, Integer> getRankCountMap(List<logicCard> cards) {
+        Map<logicCard.Rank, Integer> map = new HashMap<>();
+        for (logicCard c : cards) map.put(c.getRank(), map.getOrDefault(c.getRank(), 0) + 1);
         return map;
     }
 
@@ -205,7 +205,7 @@ public class HandEvaluator {
 	 * @param n the number of occurrences to check for
 	 * @return true if there is a rank with exactly n occurrences, false otherwise
 	 */
-    private static boolean hasNOfAKind(Map<Card.Rank, Integer> rankMap, int n) {
+    private static boolean hasNOfAKind(Map<logicCard.Rank, Integer> rankMap, int n) {
         return rankMap.containsValue(n);
     }
 
@@ -214,7 +214,7 @@ public class HandEvaluator {
      * @param rankMap the map of card ranks to their counts
      * @return true if the hand contains a full house, false otherwise
      */
-    private static boolean hasFullHouse(Map<Card.Rank, Integer> rankMap) {
+    private static boolean hasFullHouse(Map<logicCard.Rank, Integer> rankMap) {
         boolean hasThree = false, hasTwo = false;
         for (int count : rankMap.values()) {
             if (count == 3) hasThree = true;
@@ -228,7 +228,7 @@ public class HandEvaluator {
 	 * @param rankMap the map of card ranks to their counts
 	 * @return true if the hand contains at least two pairs, false otherwise
 	 */
-    private static boolean hasTwoPair(Map<Card.Rank, Integer> rankMap) {
+    private static boolean hasTwoPair(Map<logicCard.Rank, Integer> rankMap) {
         int pairCount = 0;
         for (int count : rankMap.values()) {
             if (count == 2) pairCount++;
@@ -242,12 +242,12 @@ public class HandEvaluator {
 	 * @param cards the list of cards to generate combinations from
 	 * @return a list of lists, each containing a combination of five cards
 	 */
-    private static List<List<Card>> generateFiveCardCombinations(List<Card> cards) {
-        List<List<Card>> combinations = new ArrayList<>();
+    private static List<List<logicCard>> generateFiveCardCombinations(List<logicCard> cards) {
+        List<List<logicCard>> combinations = new ArrayList<>();
         int n = cards.size();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                List<Card> combo = new ArrayList<>();
+                List<logicCard> combo = new ArrayList<>();
                 for (int k = 0; k < n; k++) {
                     if (k != i && k != j) combo.add(cards.get(k));
                 }

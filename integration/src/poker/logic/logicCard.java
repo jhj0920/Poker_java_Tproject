@@ -1,7 +1,7 @@
 package poker.logic;
 
 // 포커 게임에서 사용하는 한 장의 카드를 표현하는 클래스
-public class Card {
+public class logicCard {
     // 카드의 무늬 (스페이드, 하트 등)
     public enum Suit {
         HEARTS, DIAMONDS, CLUBS, SPADES
@@ -16,7 +16,7 @@ public class Card {
     private final Suit suit; // 카드 무늬
     private final Rank rank; // 카드 숫자
 
-    public Card(Suit suit, Rank rank) {
+    public logicCard(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }

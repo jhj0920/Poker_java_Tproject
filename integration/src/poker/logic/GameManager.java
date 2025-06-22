@@ -13,7 +13,7 @@ public class GameManager {
     private final List<Player> players;           // 플레이어 목록
     private final Deck deck;                      // 카드 덱
     private final Pot pot;                        // 판돈 관리
-    private final List<Card> communityCards;      // 커뮤니티 카드 목록
+    private final List<logicCard> communityCards;      // 커뮤니티 카드 목록
     private GameState state;                      // 현재 게임 단계
     private int dealerIndex;                      // 딜러 인덱스 (턴 순서용)
 
@@ -75,7 +75,7 @@ public class GameManager {
 
     // Getter들
     public GameState getState() { return state; }
-    public List<Card> getCommunityCards() { return communityCards; }
+    public List<logicCard> getCommunityCards() { return communityCards; }
     public Pot getPot() { return pot; }
     public List<Player> getPlayers() { return players; }
     public void advanceDealer() { dealerIndex = (dealerIndex + 1) % players.size(); }

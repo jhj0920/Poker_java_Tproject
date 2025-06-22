@@ -9,15 +9,15 @@ import java.util.*;
  */
 
 public class Deck {
-    private final List<Card> cards;       // 카드 목록 (52장)
+    private final List<logicCard> cards;       // 카드 목록 (52장)
     private int currentIndex;             // 현재 분배할 카드 인덱스
 
     public Deck() {
         cards = new ArrayList<>();
         // 52장의 고유 카드 생성
-        for (Card.Suit suit : Card.Suit.values()) {
-            for (Card.Rank rank : Card.Rank.values()) {
-                cards.add(new Card(suit, rank));
+        for (logicCard.Suit suit : logicCard.Suit.values()) {
+            for (logicCard.Rank rank : logicCard.Rank.values()) {
+                cards.add(new logicCard(suit, rank));
             }
         }
         shuffle(); // 생성 후 즉시 섞기
@@ -31,7 +31,7 @@ public class Deck {
     }
 
     // 카드 한 장을 분배함 (중복 없음)
-    public Card dealCard() {
+    public logicCard dealCard() {
         if (currentIndex >= cards.size()) {
             throw new IllegalStateException("덱에 카드가 더 이상 없습니다.");
         }

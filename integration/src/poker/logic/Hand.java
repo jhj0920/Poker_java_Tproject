@@ -10,19 +10,19 @@ import java.util.*;
  * and print the hand as a string.
  */
 public class Hand {
-    private final List<Card> cards; // 플레이어가 들고 있는 카드들
+    private final List<logicCard> cards; // 플레이어가 들고 있는 카드들
 
     public Hand() {
         cards = new ArrayList<>();
     }
 
     // 패에 카드 추가
-    public void addCard(Card card) {
+    public void addCard(logicCard card) {
         cards.add(card);
     }
 
     // 현재 패를 반환
-    public List<Card> getCards() {
+    public List<logicCard> getCards() {
         return cards;
     }
 
@@ -40,7 +40,7 @@ public class Hand {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Card card : cards) {
+        for (logicCard card : cards) {
             sb.append("- ").append(card.toString()).append("\n");
         }
         return sb.toString();

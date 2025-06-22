@@ -61,7 +61,7 @@ public class Main {
         }
 
         System.out.println("\n커뮤니티 카드:");
-        for (Card c : gameManager.getCommunityCards()) {
+        for (logicCard c : gameManager.getCommunityCards()) {
             System.out.println(c);
         }
 
@@ -83,7 +83,7 @@ public class Main {
 	 */
     private static void printCommunityCards(GameManager gameManager) {
         System.out.println("\n[" + gameManager.getState() + "] 커뮤니티 카드:");
-        for (Card c : gameManager.getCommunityCards()) {
+        for (logicCard c : gameManager.getCommunityCards()) {
             System.out.println(c);
         }
     }
