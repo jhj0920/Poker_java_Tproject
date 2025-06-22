@@ -1,5 +1,6 @@
 package poker.gui;
 
+import poker.logic.logicCard;
 import javax.swing.*;
 import java.awt.*;
 
@@ -15,6 +16,8 @@ import java.awt.*;
 public class PlayerCardPanel extends CardPanel {
     private String card1Image;
     private String card2Image;
+    private Card guiCard1;
+    private Card guiCard2;
 
     public PlayerCardPanel(String card1Image, String card2Image, Color backgroundColor) {
         super(backgroundColor);
@@ -32,9 +35,49 @@ public class PlayerCardPanel extends CardPanel {
         cardGroup.setBackground(backgroundColor);
         cardPanel.add(cardGroup);
 
-        cardGroup.add(addCard(card1Image).getCardLabel());
-        cardGroup.add(addCard(card2Image).getCardLabel());
+        guiCard1 = addCard(card1Image);
+        guiCard2 = addCard(card2Image);
+        cardGroup.add(guiCard1.getCardLabel());
+        cardGroup.add(guiCard2.getCardLabel());
 
         return cardPanel;
+    }
+    
+    /**
+	 * Updates the images of the player's cards.
+	 * @param card1 The first card to update.
+	 * @param card2 The second card to update.
+	 */
+    public void updateCards(logicCard card1, logicCard card2) {
+        card1Image = convertCard(card1);
+        card2Image = convertCard(card2);
+        guiCard1.setFrontCard(card1Image);
+        guiCard2.setFrontCard(card2Image);
+    }
+
+    /**
+	 * Converts a poker logic card to a string representation for the GUI.
+	 * @param card The poker logic card to convert.
+	 * @returns A string representing the card in the format "rank_of_suit".
+	 */
+    private String convertCard(logicCard card) {
+        String rank;
+        switch (card.getRank()) {
+            case TWO -> rank = "2";
+            case THREE -> rank = "3";
+            case FOUR -> rank = "4";
+            case FIVE -> rank = "5";
+            case SIX -> rank = "6";
+            case SEVEN -> rank = "7";
+            case EIGHT -> rank = "8";
+            case NINE -> rank = "9";
+            case TEN -> rank = "10";
+            case JACK -> rank = "jack";
+            case QUEEN -> rank = "queen";
+            case KING -> rank = "king";
+            case ACE -> rank = "ace";
+            default -> rank = "";
+        }
+        return rank + "_of_" + card.getSuit().name().toLowerCase();
     }
 }

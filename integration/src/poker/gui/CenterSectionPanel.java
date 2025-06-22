@@ -1,7 +1,10 @@
 package poker.gui;
 
+import poker.logic.GameManager;
+import poker.logic.logicCard;
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Arrays;
 
 /**
@@ -11,15 +14,19 @@ import java.util.Arrays;
  * @return A JPanel that displays the river cards and the pot amount.
  */
 public class CenterSectionPanel extends BaseSectionPanel{
+		private GameManager gameManager; // Reference to the GameManager for game logic
+		private RiverCardPanel riverCardPanel;
+	
 		private static final Dimension POT_PANEL_SIZE = new Dimension(200, 100);
 	    private static final Font POT_FONT = new Font("Arial", Font.BOLD, 16);
 	    private static final Color POT_COLOR = Color.DARK_GRAY;
 	    private static final Color TEXT_COLOR = Color.WHITE;
 
-	public CenterSectionPanel() {
+	public CenterSectionPanel(GameManager gameManager) {
+		this.gameManager = gameManager; // Initialize the GameManager reference
 		setBackground(TABLE_COLOR);
 		setLayout(new BorderLayout());
-		
+        
 		JPanel centerContainer = new JPanel();
 		centerContainer.setBackground(TABLE_COLOR);
 		centerContainer.setLayout(new GridBagLayout()); // Use BoxLayout for vertical stacking
@@ -27,7 +34,7 @@ public class CenterSectionPanel extends BaseSectionPanel{
 
 		// Create a panel for the river cards
 		
-		RiverCardPanel riverCardPanel = new RiverCardPanel(
+		riverCardPanel = new RiverCardPanel(
 				Arrays.asList("card_back", "card_back", "card_back", "card_back", "card_back"),
 				TABLE_COLOR
 		);
@@ -63,4 +70,21 @@ public class CenterSectionPanel extends BaseSectionPanel{
 
 		return potPanel;
 	}
+	
+	/**
+	 * Updates the community cards displayed in the river card panel.
+	 */
+    private void updateCommunityCards() {
+        List<logicCard> communityCards = gameManager.getCommunityCards();
+        // Logic to update GUI with community cards
+        riverCardPanel.updateCards(communityCards);
+    }
+
+    /**
+	 * Refreshes the community cards displayed in the river card panel.
+	 * This method can be called to update the display when the game state changes.
+	 */
+    public void refreshCommunityCards() {
+        updateCommunityCards();
+    }
 }

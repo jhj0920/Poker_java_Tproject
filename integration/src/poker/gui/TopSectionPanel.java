@@ -1,5 +1,7 @@
 package poker.gui;
 
+import poker.logic.GameManager;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -16,16 +18,29 @@ public class TopSectionPanel extends BaseSectionPanel {
     private static final Color BALANCE_COLOR = Color.DARK_GRAY;
     private static final Color TEXT_COLOR = Color.WHITE;
     
-    public TopSectionPanel() {
+    private final GameManager gameManager;
+    private final int playerIndex;
+    private PlayerCardPanel playerCardPanel;
+
+    public TopSectionPanel(GameManager gameManager, int playerIndex) {
+        this.gameManager = gameManager;
+        this.playerIndex = playerIndex;
         setLayout(new GridBagLayout());
 
         // Add player 2 cards panel
-        PlayerCardPanel player2CardsPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
-        add(player2CardsPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(1, 0));
+        playerCardPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
+        add(playerCardPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(1, 0));
 
         // Add balance panel
         add(createBalancePanel(), GridBagConstraintsFactory.createConstraints(1, 0, GridBagConstraints.NORTHEAST, 0.0, 0.0, GridBagConstraints.NONE));
+    }
+    
+    public void refreshCards() {
+        var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
+        if (cards.size() >= 2) {
+            playerCardPanel.updateCards(cards.get(0), cards.get(1));
         }
+    }
     
     private JPanel createBalancePanel() {
         RoundedPanel balancePanel = new RoundedPanel(20);

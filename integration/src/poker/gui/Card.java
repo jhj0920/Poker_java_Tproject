@@ -10,7 +10,7 @@ import java.awt.event.*;
  * @returns A JLabel that displays the card image.
  */
 public class Card extends JLabel {
-	protected final String frontCard; // e.g., "ace_of_hearts"
+	protected String frontCard; // e.g., "ace_of_hearts"
 	protected final JLabel cardLabel; // JLabel to display the card image
 	protected boolean isFaceUp; // Flag to check if the card is face up
 	
@@ -30,31 +30,13 @@ public class Card extends JLabel {
 	
 	public void flip() {
 		// Bug where the card does not flip if clicked multiple times quickly
-		// Bug where the card flips back to face down after the first click
-		// Change if else statement to switch statement?
-		if (isFaceUp) {
-			Timer timer = new Timer(150, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					cardLabel.setIcon(CardImageLoader.getCard(frontCard)); // Show the front of the card after 0.15 second
-				}
-			});
-			timer.setRepeats(false); // Only execute once
-			timer.start(); // Start the timer
-			isFaceUp = !isFaceUp; // Toggle the face-up state
-		} else {
-			cardLabel.setIcon(CardImageLoader.getCard(frontCard)); // Show the front of the card
-			// Flip the card back to face down after 0.15 second
-			Timer timer = new Timer(150, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					cardLabel.setIcon(CardImageLoader.getCard("card_back")); // Show the front of the card after 0.15 second
-				}
-			});
-			timer.setRepeats(false); // Only execute once
-			timer.start(); // Start the timer
-			isFaceUp = !isFaceUp; // Toggle the face-up state
-		}
+	        if (isFaceUp) {
+	            cardLabel.setIcon(CardImageLoader.getCard("card_back"));
+	            isFaceUp = false;
+	    } else {
+	            cardLabel.setIcon(CardImageLoader.getCard(frontCard));
+	            isFaceUp = true;
+	    }
 	}
 	
 	public JLabel getCardLabel() {
@@ -62,7 +44,19 @@ public class Card extends JLabel {
 	}
 	
 	public String getFrontCard() {
-		return frontCard; // Return the name of the front card
+        return frontCard; // Return the name of the front card
 	}
-
+	
+    /**
+     * Updates the image shown on this card and marks it as face up.
+     *
+     * @param frontCard the image identifier, e.g. "ace_of_spades"
+     */
+    public void setFrontCard(String frontCard) {
+            this.frontCard = frontCard;
+            this.cardLabel.setIcon(CardImageLoader.getCard(frontCard));
+            this.isFaceUp = true;
+            revalidate();
+            repaint();
+    }
 }

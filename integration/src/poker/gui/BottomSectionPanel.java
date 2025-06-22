@@ -1,5 +1,6 @@
 package poker.gui;
 
+import poker.logic.GameManager;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,11 +14,19 @@ public class BottomSectionPanel extends BaseSectionPanel {
 	private static final Dimension START_BUTTON_SIZE = new Dimension(150, 50);
 	private static final Dimension BUTTON_SIZE = new Dimension(100, 50);
 	
-	public BottomSectionPanel() {
-		setLayout(new GridBagLayout());
+    private final GameManager gameManager;
+    private final int playerIndex;
+    private final Runnable startCallback;
+    private PlayerCardPanel playerCardsPanel;
+
+    public BottomSectionPanel(GameManager gameManager, int playerIndex, Runnable startCallback) {
+            this.gameManager = gameManager;
+            this.playerIndex = playerIndex;
+            this.startCallback = startCallback;
+            setLayout(new GridBagLayout());
 		
 		// Add User's cards panel
-		PlayerCardPanel playerCardsPanel = new PlayerCardPanel("ace_of_spades", "ace_of_hearts", TABLE_COLOR);
+		playerCardsPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
 		add(playerCardsPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(0, 0));
 		
 		// Create a panel for player actions
@@ -36,6 +45,8 @@ public class BottomSectionPanel extends BaseSectionPanel {
 		// Button functionality
 		startButton.addActionListener(e -> {
 			// Logic to start the game
+			gameManager.startNewRound();
+            if (startCallback != null) startCallback.run();
 			
 			// Clear the playerActionsPanel
 		    playerActionsPanel.removeAll();
@@ -62,6 +73,16 @@ public class BottomSectionPanel extends BaseSectionPanel {
 		    playerActionsPanel.revalidate();
 		    playerActionsPanel.repaint();
 		});
+    }
+		
+    /**
+     * Refreshes the player's cards in the bottom section panel.
+     */
+    public void refreshCards() {
+    	var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
+        if (cards.size() >= 2) {
+        	playerCardsPanel.updateCards(cards.get(0), cards.get(1));
+        }
 	}
 	
 	private JButton createActionButton(String text) {
