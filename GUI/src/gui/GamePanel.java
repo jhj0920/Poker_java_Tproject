@@ -14,26 +14,49 @@ public class GamePanel extends JPanel {
     
 	public GamePanel() {
 		setBackground(TABLE_COLOR);
-		setLayout(new BorderLayout());
+		
+        // Create a layered pane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(1000, 750));
+        layeredPane.setLayout(null); // Use null layout for absolute positioning
+
+        // ---------------- Main Content Panel ----------------------------
+        JPanel mainContentPanel = new JPanel();
+        mainContentPanel.setLayout(new BorderLayout());
+        mainContentPanel.setBounds(0, 0, 1000, 720); // Full size of the frame
+        mainContentPanel.setBackground(TABLE_COLOR);
 		
 		// ---------------- Top Section (Player 2, Balance) -----------------
         TopSectionPanel topSectionPanel = new TopSectionPanel();
-        add(topSectionPanel, BorderLayout.NORTH);
+        mainContentPanel.add(topSectionPanel, BorderLayout.NORTH);
         
         // ---------------- Player 1 (Left, Bottom-Aligned) -----------------
         LeftSectionPanel leftSectionPanel = new LeftSectionPanel();
-        add(leftSectionPanel, BorderLayout.WEST);
+        mainContentPanel.add(leftSectionPanel, BorderLayout.WEST);
 		
 		// --------------- Player 3 (Right, Bottom-Aligned) -----------------
         RightSectionPanel rightSectionPanel = new RightSectionPanel();
-        add(rightSectionPanel, BorderLayout.EAST);
+        mainContentPanel.add(rightSectionPanel, BorderLayout.EAST);
 		
 		// ---------------- Center Section (River, Pot) ---------------------
         CenterSectionPanel centerSectionPanel = new CenterSectionPanel();
-        add(centerSectionPanel, BorderLayout.CENTER);
+        mainContentPanel.add(centerSectionPanel, BorderLayout.CENTER);
 		
         // ------------ Bottom Section (Player Cards, Actions) --------------
         BottomSectionPanel bottomSectionPanel = new BottomSectionPanel();
-        add(bottomSectionPanel, BorderLayout.SOUTH);
+        mainContentPanel.add(bottomSectionPanel, BorderLayout.SOUTH);
+        
+        // Add the main content panel to the default layer
+        layeredPane.add(mainContentPanel, JLayeredPane.DEFAULT_LAYER);
+        
+        // ---------------- Chat Panel (Overlay) ----------------------------
+        ChatPanel chatPanel = new ChatPanel();
+        chatPanel.setBounds(10, 520, 300, 200); // Position at bottom-left corner
+        layeredPane.add(chatPanel, JLayeredPane.PALETTE_LAYER); // Add to a higher layer
+        
+        // Add the layered pane to the GamePanel
+        setLayout(new BorderLayout());
+        add(layeredPane, BorderLayout.CENTER);
+        
 	}
 }
