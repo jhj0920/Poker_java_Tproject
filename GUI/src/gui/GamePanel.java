@@ -11,21 +11,44 @@ import java.awt.*;
  */
 public class GamePanel extends JPanel {
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
+    private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
+    private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 520, 300, 200); // Position at bottom-left corner
     
 	public GamePanel() {
 		setBackground(TABLE_COLOR);
-		
-        // Create a layered pane
+        // Add the layered pane to the GamePanel
+        setLayout(new BorderLayout());
+        add(setupLayeredPane(), BorderLayout.CENTER);
+	}
+	
+	/**
+	 * Sets up the layered pane that contains the main content and chat panel.
+	 * The main content is on the default layer, while the chat panel is on a higher layer.
+	 * @returns A JLayeredPane containing the main game content and chat panel.
+	 */
+    private JLayeredPane setupLayeredPane() {
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(1000, 750));
         layeredPane.setLayout(null); // Use null layout for absolute positioning
 
-        // ---------------- Main Content Panel ----------------------------
+        // Add the main content panel to the default layer
+        layeredPane.add(setupMainContentPanel(), JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(setupChatPanel(), JLayeredPane.PALETTE_LAYER); // Add to a higher layer
+
+        return layeredPane;
+    }
+    
+    /**
+	 * Sets up the main content panel that contains all sections of the game.
+	 * This includes the top section for player 2 and balance, left section for player 1,
+	 * right section for player 3, center section for river and pot, and bottom section for player cards and actions.
+	 * @returns A JPanel containing all sections of the poker game.
+	 */
+    private JPanel setupMainContentPanel() {
         JPanel mainContentPanel = new JPanel();
         mainContentPanel.setLayout(new BorderLayout());
-        mainContentPanel.setBounds(0, 0, 1000, 720); // Full size of the frame
+        mainContentPanel.setBounds(0, 0, FRAME_SIZE.width, FRAME_SIZE.height);
         mainContentPanel.setBackground(TABLE_COLOR);
-		
+
 		// ---------------- Top Section (Player 2, Balance) -----------------
         TopSectionPanel topSectionPanel = new TopSectionPanel();
         mainContentPanel.add(topSectionPanel, BorderLayout.NORTH);
@@ -45,18 +68,19 @@ public class GamePanel extends JPanel {
         // ------------ Bottom Section (Player Cards, Actions) --------------
         BottomSectionPanel bottomSectionPanel = new BottomSectionPanel();
         mainContentPanel.add(bottomSectionPanel, BorderLayout.SOUTH);
-        
-        // Add the main content panel to the default layer
-        layeredPane.add(mainContentPanel, JLayeredPane.DEFAULT_LAYER);
-        
+
+        return mainContentPanel;
+    }
+
+    /**
+	 * Sets up the chat panel that overlays the main content.
+	 * The chat panel is positioned at the bottom-left corner of the game panel.
+	 * @returns A ChatPanel that allows players to communicate during the game.
+	 */
+    private ChatPanel setupChatPanel() {
         // ---------------- Chat Panel (Overlay) ----------------------------
         ChatPanel chatPanel = new ChatPanel();
-        chatPanel.setBounds(10, 520, 300, 200); // Position at bottom-left corner
-        layeredPane.add(chatPanel, JLayeredPane.PALETTE_LAYER); // Add to a higher layer
-        
-        // Add the layered pane to the GamePanel
-        setLayout(new BorderLayout());
-        add(layeredPane, BorderLayout.CENTER);
-        
-	}
+        chatPanel.setBounds(CHAT_PANEL_BOUNDS);
+        return chatPanel;
+    }
 }

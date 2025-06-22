@@ -70,7 +70,10 @@ public class BottomSectionPanel extends BaseSectionPanel {
 		return button;
 	}
 	
-    // Private class for handling button actions
+    /**
+	 * Action listener for the action buttons (Call, Raise, Fold, All In).
+	 * Handles the button clicks and performs the corresponding actions.
+	 */
     private class ButtonActionHandler implements ActionListener {
         private final String actionType;
 
@@ -102,6 +105,11 @@ public class BottomSectionPanel extends BaseSectionPanel {
             }
         }
 
+        /**
+		 * Shows a dialog for selecting the raise amount using a slider.
+		 * The dialog contains a label to display the current raise amount,
+		 * a slider to select the amount, and a button to confirm the selection.
+		 */
         private void showRaiseDialog() {
         	// Create a dialog for the raise slider
             JDialog raiseDialog = new JDialog((Frame) null, "Raise Amount", true);

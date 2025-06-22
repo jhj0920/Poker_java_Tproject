@@ -3,6 +3,12 @@ package gui;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * ChatPanel is a custom panel for displaying chat messages and an input field for user input.
+ * It extends JLayeredPane to allow for layering of components.
+ * The chat area is a JTextArea that displays messages, and the input field is a JTextField for user input.
+ * The panel has a semi-transparent background to blend with the game interface.
+ */
 public class ChatPanel extends JLayeredPane {
     private static final Dimension CHAT_PANEL_SIZE = new Dimension(300, 200);
     private static final Dimension INPUT_FIELD_SIZE = new Dimension(280, 30);
@@ -14,7 +20,17 @@ public class ChatPanel extends JLayeredPane {
         setPreferredSize(CHAT_PANEL_SIZE);
         setLayout(null); // Use null layout for absolute positioning
 
-        // Create the chat area
+        add(createChatAreaScrollPane(), JLayeredPane.DEFAULT_LAYER);
+        add(createInputField(), JLayeredPane.PALETTE_LAYER);
+    }
+    
+    /**
+	 * Creates a scroll pane for the chat area.
+	 * The chat area is a JTextArea that displays messages.
+	 * The scroll pane allows for scrolling through the chat messages.
+	 * @returns A JScrollPane containing the chat area.
+	 */
+    private JScrollPane createChatAreaScrollPane() {
         chatArea = new JTextArea();
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
@@ -23,22 +39,27 @@ public class ChatPanel extends JLayeredPane {
         chatArea.setForeground(Color.WHITE);
         chatArea.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        // Add the chat area inside a scroll pane
         JScrollPane scrollPane = new JScrollPane(chatArea);
         scrollPane.setBounds(0, 0, CHAT_PANEL_SIZE.width, CHAT_PANEL_SIZE.height - INPUT_FIELD_SIZE.height);
         scrollPane.setOpaque(false);
         scrollPane.getViewport().setOpaque(false);
 
-        // Create the input field
+        return scrollPane;
+    }
+
+    /**
+     * Creates an input field for the chat panel.
+     * The input field is a JTextField where users can type their messages.
+     * @return A JTextField for user input.
+     */
+    private JTextField createInputField() {
         inputField = new JTextField();
         inputField.setBounds(10, CHAT_PANEL_SIZE.height - INPUT_FIELD_SIZE.height, INPUT_FIELD_SIZE.width, INPUT_FIELD_SIZE.height);
         inputField.setBackground(new Color(0, 0, 0, 100)); // Semi-transparent background
         inputField.setForeground(Color.WHITE);
         inputField.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        // Add components to different layers
-        add(scrollPane, JLayeredPane.DEFAULT_LAYER);
-        add(inputField, JLayeredPane.PALETTE_LAYER);
+        return inputField;
     }
 
     public JTextArea getChatArea() {
