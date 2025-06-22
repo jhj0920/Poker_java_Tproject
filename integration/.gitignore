@@ -5,3 +5,4 @@
 # Eclipse/IDE project files
 *.project
 
+/server/
