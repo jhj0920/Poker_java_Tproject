@@ -1,6 +1,7 @@
 package poker.gui;
 
 import poker.logic.GameManager;
+import poker.logic.BettingRoundManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,6 +19,7 @@ public class GamePanel extends JPanel {
     private RightSectionPanel rightSectionPanel;
     private BottomSectionPanel bottomSectionPanel;
     private CenterSectionPanel centerSectionPanel;
+    private BettingRoundManager bettingManager;
 	
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
     private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
@@ -25,6 +27,7 @@ public class GamePanel extends JPanel {
     
 	public GamePanel(GameManager gameManager) {
 		this.gameManager = gameManager;
+		this.bettingManager = new BettingRoundManager(gameManager);
 		setBackground(TABLE_COLOR);
         // Add the layered pane to the GamePanel
         setLayout(new BorderLayout());
@@ -76,7 +79,7 @@ public class GamePanel extends JPanel {
         mainContentPanel.add(centerSectionPanel, BorderLayout.CENTER);
 		
         // ------------ Bottom Section (Player Cards, Actions) --------------
-        bottomSectionPanel = new BottomSectionPanel(gameManager, 3, this::refreshAll);
+        bottomSectionPanel = new BottomSectionPanel(gameManager, bettingManager, 3, this::refreshAll);
         mainContentPanel.add(bottomSectionPanel, BorderLayout.SOUTH);
 
         return mainContentPanel;
@@ -91,6 +94,7 @@ public class GamePanel extends JPanel {
         topSectionPanel.refreshCards();
         bottomSectionPanel.refreshCards();
         centerSectionPanel.refreshCommunityCards();
+        centerSectionPanel.refreshPot();
     }
 
     /**

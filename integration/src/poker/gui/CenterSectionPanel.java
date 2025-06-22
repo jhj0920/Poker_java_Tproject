@@ -16,6 +16,7 @@ import java.util.Arrays;
 public class CenterSectionPanel extends BaseSectionPanel{
 		private GameManager gameManager; // Reference to the GameManager for game logic
 		private RiverCardPanel riverCardPanel;
+		private JLabel potLabel;
 	
 		private static final Dimension POT_PANEL_SIZE = new Dimension(200, 100);
 	    private static final Font POT_FONT = new Font("Arial", Font.BOLD, 16);
@@ -63,7 +64,7 @@ public class CenterSectionPanel extends BaseSectionPanel{
 		potPanel.setPreferredSize(POT_PANEL_SIZE);
 		potPanel.setBackground(POT_COLOR);
 
-		JLabel potLabel = new JLabel("Pot: $0"); // Example pot amount, replace with actual game logic
+		potLabel = new JLabel("Pot: $0"); // Example pot amount, replace with actual game logic
 		potLabel.setFont(POT_FONT);
 		potLabel.setForeground(TEXT_COLOR);
 		potPanel.add(potLabel, GridBagConstraintsFactory.createDefaultConstraints(0, 0));
@@ -86,5 +87,9 @@ public class CenterSectionPanel extends BaseSectionPanel{
 	 */
     public void refreshCommunityCards() {
         updateCommunityCards();
+    }
+    
+    public void refreshPot() {
+        potLabel.setText("Pot: $" + gameManager.getPot().getTotal());
     }
 }
