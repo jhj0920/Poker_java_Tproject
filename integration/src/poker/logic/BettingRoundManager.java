@@ -76,8 +76,9 @@ public class BettingRoundManager {
                                 break;
                             }
 
+                            int previousCurrentBet = currentBet;
                             currentBet = raiseTo;
-                            lastRaiseAmount = raiseTo - currentBet;
+                            lastRaiseAmount = raiseTo - previousCurrentBet;
                             pot.addChips(player, raiseAmount);
                             player.setChips(player.getChips() - raiseAmount);
                             bets.put(player, raiseTo);
