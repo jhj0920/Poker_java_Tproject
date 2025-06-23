@@ -77,7 +77,7 @@ public class ClientHandler implements Runnable {
                     } else if (currentParty.getPlayerCount() < 2) {
                         out.println("ERROR Not enough players.");
                     } else {
-                        currentParty.broadcast("GAME_START");
+                        currentParty.startGame();
                         System.out.println("Party " + currentParty.getPartyId() + " starting game.");
                     }
                 } else if (command.equals("BET") || command.equals("CALL") || command.equals("RAISE") || command.equals("FOLD") || command.equals("ALL_IN")) {

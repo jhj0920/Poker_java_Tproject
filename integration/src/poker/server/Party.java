@@ -77,7 +77,10 @@ public class Party {
         }
     }
     
-    private void startGame() {
+    synchronized void startGame() {
+        if (gameSession != null || players.size() < 2) {
+            return;
+        }
         gameSession = new GameSession(players);
         broadcast("GAME_START");
         gameSession.broadcastInitialState();

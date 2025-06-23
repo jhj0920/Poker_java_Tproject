@@ -64,6 +64,18 @@ public class GameGUI {
             panel.getChatPanel().appendMessage(line.substring(5));
             return;
         }
+        
+        if (line.startsWith("ERROR")) {
+            String msg = line.substring(6).trim();
+            JOptionPane.showMessageDialog(
+                    frame,
+                    msg,
+                    "Server Error",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
 
         if (!line.startsWith("GAME")) {
             return;

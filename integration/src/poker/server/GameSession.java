@@ -14,6 +14,7 @@ public class GameSession {
     private final Map<ClientHandler, Player> playerMap = new HashMap<>();
     private final List<ClientHandler> handlers;
     private int turnIndex = 0;
+    private int dealerIndex;
     private int smallBlindIndex;
     private int bigBlindIndex;
     private static final int SMALL_BLIND = 50;
@@ -30,6 +31,7 @@ public class GameSession {
         }
         gameManager = new GameManager(players);
         bettingManager = new BettingRoundManager(gameManager);
+        dealerIndex = random.nextInt(handlers.size());
         gameManager.startNewRound();
         setupBlinds();
     }
@@ -38,6 +40,10 @@ public class GameSession {
     public synchronized void handleAction(ClientHandler sender, String action, int amount) {
         Player p = playerMap.get(sender);
         if (p == null) {
+            return;
+        }
+        if (handlers.get(turnIndex) != sender) {
+            sender.sendMessage("ERROR 아직 차례가 아닙니다.");
             return;
         }
         String error = null;
@@ -103,14 +109,52 @@ public class GameSession {
     }
     
     private void setupBlinds() {
-        smallBlindIndex = random.nextInt(handlers.size());
-        bigBlindIndex = (smallBlindIndex + 1) % handlers.size();
-        turnIndex = (bigBlindIndex + 1) % handlers.size();
+        if (handlers.size() == 2) {
+            // Dealer posts the small blind in heads-up play
+            smallBlindIndex = dealerIndex;
+            bigBlindIndex = (dealerIndex + 1) % handlers.size();
+            // Big blind acts first preflop
+            turnIndex = bigBlindIndex;
+        } else {
+            smallBlindIndex = (dealerIndex + 1) % handlers.size();
+            bigBlindIndex = (dealerIndex + 2) % handlers.size();
+            // Action begins with the player after the big blind
+            turnIndex = (bigBlindIndex + 1) % handlers.size();
+        }
 
         Player sbPlayer = handlers.get(smallBlindIndex).getPlayer();
         Player bbPlayer = handlers.get(bigBlindIndex).getPlayer();
-        bettingManager.raise(sbPlayer, SMALL_BLIND);
-        bettingManager.raise(bbPlayer, BIG_BLIND);
+        String err = bettingManager.raise(sbPlayer, SMALL_BLIND);
+        if (err != null) {
+            bettingManager.allIn(sbPlayer);
+        }
+        broadcast("PLAYER_ACTION " + sbPlayer.getName() + " BET " + sbPlayer.getCurrentBet());
+
+        err = bettingManager.raise(bbPlayer, BIG_BLIND);
+        if (err != null) {
+            bettingManager.allIn(bbPlayer);
+        }
+        broadcast("PLAYER_ACTION " + bbPlayer.getName() + " BET " + bbPlayer.getCurrentBet());
+    }
+    
+    /**
+     * Resets {@code turnIndex} to the first active player for a new betting
+     * phase (flop and later). The first player after the dealer acts first,
+     * or the dealer in heads-up play.
+     */
+    private void resetTurnForNextPhase() {
+        int index = handlers.size() == 2
+                ? dealerIndex
+                : (dealerIndex + 1) % handlers.size();
+        for (int i = 0; i < handlers.size(); i++) {
+            Player p = handlers.get(index).getPlayer();
+            if (!p.isFolded() && p.getChips() > 0) {
+                turnIndex = index;
+                break;
+            }
+            index = (index + 1) % handlers.size();
+        }
+        broadcastTurn();
     }
 
     private void nextTurn() {
@@ -152,6 +196,7 @@ public class GameSession {
             } else {
                 broadcastCommunity();
                 broadcastBets();
+                resetTurnForNextPhase();
             }
             return true;
         }
@@ -159,6 +204,7 @@ public class GameSession {
     }
 
     private void startNewRound() {
+        dealerIndex = (dealerIndex + 1) % handlers.size();
         gameManager.startNewRound();
         bettingManager.reset();
         setupBlinds();
