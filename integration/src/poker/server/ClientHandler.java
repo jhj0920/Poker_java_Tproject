@@ -47,6 +47,8 @@ public class ClientHandler implements Runnable {
                     Party party = partyManager.getParty(partyId);
                     if (party == null) {
                         out.println("ERROR Party not found.");
+                    } else if (party.hasPlayer(this)) {
+                        out.println("ERROR Already in party.");
                     } else if (party.addPlayer(this)) {
                         currentParty = party;
                         out.println("JOINED " + partyId);
@@ -56,6 +58,17 @@ public class ClientHandler implements Runnable {
                         }
                     } else {
                         out.println("ERROR Party is full.");
+                    }
+                } else if (command.equals("START")) {
+                    if (currentParty == null) {
+                        out.println("ERROR Not in a party.");
+                    } else if (currentParty.getLeader() != this) {
+                        out.println("ERROR Only leader can start.");
+                    } else if (currentParty.getPlayerCount() <= 2) {
+                        out.println("ERROR Not enough players.");
+                    } else {
+                        currentParty.broadcast("GAME_START");
+                        System.out.println("Party " + currentParty.getPartyId() + " starting game.");
                     }
                 } else {
                     out.println("ERROR Invalid command.");
@@ -70,9 +83,17 @@ public class ClientHandler implements Runnable {
     }
 
     /**
-	 * Sends a message to the client.
-	 * @param message The message to send.
-	 */
+     * Sends a message to the client.
+     */
+    public void sendMessage(String message) {
+        if (out != null) {
+            out.println(message);
+        }
+    }
+
+    /**
+     * Cleanup resources when the client disconnects.
+     */
     private void cleanup() {
         try {
         	// Close the input and output streams
