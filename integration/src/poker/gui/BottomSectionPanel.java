@@ -5,7 +5,6 @@ import poker.logic.Player;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 
@@ -48,10 +47,11 @@ public class BottomSectionPanel extends BaseSectionPanel {
         actions.add(checkButton, GridBagConstraintsFactory.createDefaultConstraints(3,0));
         actions.add(allInButton, GridBagConstraintsFactory.createDefaultConstraints(4,0));
 
-        callButton.addActionListener(e -> send("CALL"));
+
+        callButton.addActionListener(e -> handleCall());
         foldButton.addActionListener(e -> send("FOLD"));
-        checkButton.addActionListener(e -> send("BET 0"));
-        allInButton.addActionListener(e -> send("BET " + getPlayer().getChips()));
+        checkButton.addActionListener(e -> handleCheck());
+        allInButton.addActionListener(e -> handleAllIn());
         raiseButton.addActionListener(e -> showRaiseDialog());
     }
 
@@ -87,6 +87,61 @@ public class BottomSectionPanel extends BaseSectionPanel {
         button.setPreferredSize(BUTTON_SIZE);
         return button;
     }
+    
+    /** Display an informational dialog explaining why an action cannot be taken. */
+    private void showInfo(String message) {
+        JOptionPane.showMessageDialog(
+                null,
+                message,
+                "유효하지 않은 액션입니다.",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    /** Handle call button, validating chips before sending the command. */
+    private void handleCall() {
+        Player player = getPlayer();
+        int currentBet = gameManager.getPlayers().stream()
+                .mapToInt(Player::getCurrentBet)
+                .max()
+                .orElse(0);
+        int toCall = currentBet - player.getCurrentBet();
+        if (toCall == 0) {
+            showInfo("콜할 대상이 없습니다. 체크하거나 레이즈를 고려하세요.");
+            return;
+        }
+        if (toCall > player.getChips()) {
+            showInfo("콜을 하기에는 칩이 부족합니다: $" + toCall + "가 필요합니다.");
+            return;
+        }
+        send("CALL");
+    }
+
+    /** Handle check button, ensuring no bet is outstanding. */
+    private void handleCheck() {
+        Player player = getPlayer();
+        int currentBet = gameManager.getPlayers().stream()
+                .mapToInt(Player::getCurrentBet)
+                .max()
+                .orElse(0);
+        int toCall = currentBet - player.getCurrentBet();
+        if (toCall > 0) {
+            showInfo("상대가 베팅한 상태에서는 체크할 수 없습니다");
+            return;
+        }
+        send("BET 0");
+    }
+
+    /** Handle all-in button with basic validation. */
+    private void handleAllIn() {
+        Player player = getPlayer();
+        if (player.getChips() <= 0) {
+            showInfo("올인을 할 칩이 남아있지 않습니다.");
+            return;
+        }
+        send("BET " + player.getChips());
+    }
+
 
     private void showRaiseDialog() {
         Player player = getPlayer();
@@ -95,12 +150,28 @@ public class BottomSectionPanel extends BaseSectionPanel {
         dialog.setSize(300, 150);
         dialog.setLocationRelativeTo(null);
 
-        int max = player.getChips();
-        if (max <= 0) return;
+        // Determine the minimum and maximum amounts allowed for a raise.
+        int currentBet = gameManager.getPlayers().stream()
+                .mapToInt(Player::getCurrentBet)
+                .max()
+                .orElse(0);
+        int max = player.getCurrentBet() + player.getChips();
+        int min = Math.max(1, currentBet * 2);
 
-        JLabel label = new JLabel("Amount: 1", SwingConstants.CENTER);
+        // If the player cannot meet the minimum raise, inform them and exit.
+        if (max < min) {
+            JOptionPane.showMessageDialog(
+                    null,
+                    "최소 레이즈 금액인 $" + min + "보다 칩이 부족합니다.",
+                    "레이즈할 수 없습니다",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+        
+        JLabel label = new JLabel("Amount: " + min, SwingConstants.CENTER);        
         dialog.add(label, BorderLayout.NORTH);
-        JSlider slider = new JSlider(1, max, 1);
+        JSlider slider = new JSlider(min, max, min);
         slider.setMajorTickSpacing(Math.max(1, max / 5));
         slider.setPaintTicks(true);
         slider.setPaintLabels(true);

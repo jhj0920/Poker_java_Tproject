@@ -41,16 +41,21 @@ public class GameSession {
             return;
         }
         String error = null;
+        int broadcastAmount = amount;
         switch (action) {
             case "CALL" -> error = bettingManager.call(p);
             case "FOLD" -> error = bettingManager.fold(p);
             case "RAISE" -> error = bettingManager.raise(p, amount);
             case "BET" -> error = bettingManager.raise(p, bettingManager.getCurrentBet() + amount);
+            case "ALL_IN" -> {
+                broadcastAmount = p.getChips();
+                error = bettingManager.allIn(p);
+            }
         }
         if (error != null) {
             sender.sendMessage("ERROR " + error);
         } else {
-        	broadcast("PLAYER_ACTION " + sender.getPlayer().getName() + " " + action + (action.equals("CALL")||action.equals("FOLD")?"":" " + amount));
+            broadcast("PLAYER_ACTION " + sender.getPlayer().getName() + " " + action + (action.equals("CALL")||action.equals("FOLD")?"":" " + broadcastAmount));
             broadcastBets();
             nextTurn();
         }
