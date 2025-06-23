@@ -32,11 +32,26 @@ public class LobbyFrame extends JFrame {
         setTitle("Poker Lobby");
         setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new BorderLayout());
+        
+        // Use the poker logo as a background image if available
+        URL logoUrl = LobbyFrame.class.getResource("/poker/gui/img/pokerLogo.jpg");
+        Container content = getContentPane();
+        if (logoUrl != null) {
+            ImageIcon logoIcon = new ImageIcon(logoUrl);
+            JLabel background = new JLabel(logoIcon);
+            setContentPane(background);
+            background.setLayout(new BorderLayout());
+            content = background;
+        }
+        content.setLayout(new BorderLayout());
 
         logArea = new JTextArea();
         logArea.setEditable(false);
-        add(new JScrollPane(logArea), BorderLayout.CENTER);
+        logArea.setOpaque(false);
+        JScrollPane logScroll = new JScrollPane(logArea);
+        logScroll.setOpaque(false);
+        logScroll.getViewport().setOpaque(false);
+        add(logScroll, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(new FlowLayout());
         partyField = new JTextField(10);
