@@ -112,8 +112,20 @@ public class GameGUI {
             case "WINNER" -> {
                 String msg = rest.substring(7);
                 panel.getChatPanel().appendMessage(msg);
-                JOptionPane.showMessageDialog(frame, msg, "Result", JOptionPane.INFORMATION_MESSAGE);
+                if (msg.contains(" wins $")) {
+                    VictoryDialog dialog = new VictoryDialog(frame, msg);
+                    dialog.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(frame, msg, "Result", JOptionPane.INFORMATION_MESSAGE);
+                }
                 panel.hideAllCards();
+            }
+            case "VICTORY" -> {
+                String winner = rest.substring(8);
+                String msg = winner + " is the champion!";
+                panel.getChatPanel().appendMessage(msg);
+                VictoryDialog dialog = new VictoryDialog(frame, msg);
+                dialog.setVisible(true);
             }
         }
         SwingUtilities.invokeLater(panel::refreshAll);

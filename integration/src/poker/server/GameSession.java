@@ -205,12 +205,32 @@ public class GameSession {
     }
 
     private void startNewRound() {
+        for (Player p : gameManager.getPlayers()) {
+            if (p.getChips() <= 0) {
+                p.fold();
+            }
+        }
+
+        Player last = null;
+        for (Player p : gameManager.getPlayers()) {
+            if (p.getChips() > 0) {
+                if (last != null) { last = null; break; }
+                last = p;
+            }
+        }
+        if (last != null) {
+            broadcast("VICTORY " + last.getName());
+            return;
+        }
+
         dealerIndex = (dealerIndex + 1) % handlers.size();
         gameManager.startNewRound();
         bettingManager.reset();
         setupBlinds();
         broadcastInitialState();
     }
+    
+    
 
     private String encodeCards(List<logicCard> cards) {
         StringBuilder sb = new StringBuilder();
