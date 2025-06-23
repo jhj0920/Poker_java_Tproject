@@ -131,7 +131,7 @@ public class BottomSectionPanel extends BaseSectionPanel {
             showInfo("상대가 베팅한 상태에서는 체크할 수 없습니다");
             return;
         }
-        send("BET 0");
+        send("CHECK");
     }
 
     /** Handle all-in button with basic validation. */

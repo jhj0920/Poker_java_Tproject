@@ -53,6 +53,7 @@ public class GameSession {
             case "FOLD" -> error = bettingManager.fold(p);
             case "RAISE" -> error = bettingManager.raise(p, amount);
             case "BET" -> error = bettingManager.raise(p, bettingManager.getCurrentBet() + amount);
+            case "CHECK" -> error = bettingManager.check(p);
             case "ALL_IN" -> {
                 broadcastAmount = p.getChips();
                 error = bettingManager.allIn(p);
@@ -61,7 +62,7 @@ public class GameSession {
         if (error != null) {
             sender.sendMessage("ERROR " + error);
         } else {
-            broadcast("PLAYER_ACTION " + sender.getPlayer().getName() + " " + action + (action.equals("CALL")||action.equals("FOLD")?"":" " + broadcastAmount));
+            broadcast("PLAYER_ACTION " + sender.getPlayer().getName() + " " + action + (action.equals("CALL")||action.equals("FOLD")||action.equals("CHECK")?"":" " + broadcastAmount));
             broadcastBets();
             if (!checkProgress()) {
                 nextTurn();
