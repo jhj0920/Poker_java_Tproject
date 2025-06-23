@@ -13,9 +13,9 @@ import java.awt.event.*;
  * @returns A JPanel with the player's cards and action buttons.
  */
 public class BottomSectionPanel extends BaseSectionPanel {
-	private static final Dimension START_BUTTON_SIZE = new Dimension(150, 50);
-	private static final Dimension BUTTON_SIZE = new Dimension(100, 50);
-	
+    private static final Dimension START_BUTTON_SIZE = new Dimension(150, 50);
+    private static final Dimension BUTTON_SIZE = new Dimension(100, 50);
+    
     private final GameManager gameManager;
     private final int playerIndex;
     private final Runnable startCallback;
