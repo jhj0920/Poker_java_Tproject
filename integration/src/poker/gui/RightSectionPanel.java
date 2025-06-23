@@ -74,6 +74,11 @@ public class RightSectionPanel extends BaseSectionPanel {
     
     public void refreshBalance() {
         balanceLabel.setText("$" + gameManager.getPlayers().get(playerIndex).getChips());
+    }
+
+	/** Dim or undim this player's card panel regardless of logic state. */
+	public void setDead(boolean on) {
+	    playerCardPanel.setDead(on);
 	}
 	
 	private JPanel createBalancePanel() {

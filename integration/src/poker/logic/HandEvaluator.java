@@ -79,17 +79,20 @@ public class HandEvaluator {
         }
 
         if (!winners.isEmpty()) {
-            int splitAmount = pot.getTotal() / winners.size();
+            int total = pot.getTotal();
+            int splitAmount = total / winners.size();
+            int remainder = total % winners.size();
             StringBuilder sb = new StringBuilder();
             sb.append("승자: ");
             for (int i = 0; i < winners.size(); i++) {
                 Player winner = winners.get(i);
-                winner.setChips(winner.getChips() + splitAmount);
+                int payout = splitAmount + (i < remainder ? 1 : 0);
+                winner.setChips(winner.getChips() + payout);
                 sb.append(winner.getName());
                 if (i < winners.size() - 1) sb.append(", ");
             }
             sb.append(" (" + bestHand.rank + ")\n");
-            sb.append("각 승자는 팟의 $" + splitAmount + "을 가져갑니다.");
+            sb.append("총 팟 $" + total + "을 나누어 가집니다.");
             System.out.println("\n" + sb);
             return sb.toString();
         } else {

@@ -91,6 +91,8 @@ public class PlayerCardPanel extends CardPanel {
         this.dead = on;
         if (cardGroup != null) {
             cardGroup.setBackground(on ? Color.DARK_GRAY : backgroundColor);
+            guiCard1.setDimmed(on);
+            guiCard2.setDimmed(on);
         }
     }
 

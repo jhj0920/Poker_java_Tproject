@@ -17,15 +17,32 @@ public class GameGUI {
     private final GamePanel panel;
     private final GameManager gameManager;
     private final PrintWriter out;
+    private final int playerCount;
 
     private final Map<String, Integer> nameToIndex = new HashMap<>();
     private int nextIndex = 0;
     private String myName;
 
-    public GameGUI(PrintWriter out) {
+    public GameGUI(PrintWriter out, int playerCount) {
         this.out = out;
+        this.playerCount = playerCount;
         this.gameManager = new GameManager(createPlayers());
-        this.panel = new GamePanel(gameManager, out);
+
+        List<Player> players = gameManager.getPlayers();
+        // Fold and zero out only the unused seats so that extra players do not
+        // participate in local logic when the lobby starts with fewer than four
+        // people. Seat 3 (bottom) is always the local player.
+        if (playerCount == 2) {
+            players.get(1).setChips(0); // top
+            players.get(1).fold();
+            players.get(2).setChips(0); // right
+            players.get(2).fold();
+        } else if (playerCount == 3) {
+            players.get(2).setChips(0); // right
+            players.get(2).fold();
+        }
+
+        this.panel = new GamePanel(gameManager, out, playerCount);
         panel.getChatPanel().addSendListener(e -> {
             if (out != null) {
                 out.println("CHAT " + e.getActionCommand());
@@ -37,6 +54,9 @@ public class GameGUI {
         frame.setSize(1000, 750);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
+
+        // Initialize panel with default state
+        panel.refreshAll();
     }
 
     public void processServerMessage(String line) {
@@ -132,13 +152,15 @@ public class GameGUI {
         }
         return gameManager.getPlayers().get(idx);
     }
+    
+    private static final int STARTING_CHIPS = 10000;
 
     private List<Player> createPlayers() {
         return Arrays.asList(
-                new Player("P1", 0),
-                new Player("P2", 0),
-                new Player("P3", 0),
-                new Player("You", 0)
+                new Player("P1", STARTING_CHIPS),
+                new Player("P2", STARTING_CHIPS),
+                new Player("P3", STARTING_CHIPS),
+                new Player("You", STARTING_CHIPS)
         );
     }
     

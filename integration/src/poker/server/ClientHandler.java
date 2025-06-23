@@ -74,7 +74,7 @@ public class ClientHandler implements Runnable {
                         out.println("ERROR Not in a party.");
                     } else if (currentParty.getLeader() != this) {
                         out.println("ERROR Only leader can start.");
-                    } else if (currentParty.getPlayerCount() <= 2) {
+                    } else if (currentParty.getPlayerCount() < 2) {
                         out.println("ERROR Not enough players.");
                     } else {
                         currentParty.broadcast("GAME_START");

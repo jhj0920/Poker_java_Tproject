@@ -104,7 +104,7 @@ public class LobbyFrame extends JFrame {
             try {
                 SwingUtilities.invokeAndWait(() -> {
                     dispose();
-                    gameGui = new GameGUI(out);
+                    gameGui = new GameGUI(out, playerCount);
                 });
             } catch (Exception e) {
                 e.printStackTrace();
@@ -114,7 +114,7 @@ public class LobbyFrame extends JFrame {
     }
 
     private void updateStartButton() {
-        startButton.setEnabled(isLeader && playerCount > 2);
+        startButton.setEnabled(isLeader && playerCount >= 2);
     }
 
     private void sendCommand(String command) {

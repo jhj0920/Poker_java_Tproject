@@ -21,15 +21,17 @@ public class GamePanel extends JPanel {
     private BottomSectionPanel bottomSectionPanel;
     private CenterSectionPanel centerSectionPanel;
     private final PrintWriter out;
+    private final int playerCount;
     private ChatPanel chatPanel;
     
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
     private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
     private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 470, 300, 200); // Position at bottom-left corner
     
-    public GamePanel(GameManager gameManager, PrintWriter out) {
+    public GamePanel(GameManager gameManager, PrintWriter out, int playerCount) {
         this.gameManager = gameManager;
         this.out = out;
+        this.playerCount = playerCount;
         setBackground(TABLE_COLOR);
         setLayout(new BorderLayout());
         add(setupLayeredPane(gameManager), BorderLayout.CENTER);
@@ -84,7 +86,19 @@ public class GamePanel extends JPanel {
         bottomSectionPanel = new BottomSectionPanel(gameManager, out, 3);
         mainContentPanel.add(bottomSectionPanel, BorderLayout.SOUTH);
 
+        dimMissingPlayers();
+        
         return mainContentPanel;
+    }
+    
+    /** Dim the panels for players that are not present in the lobby. */
+    private void dimMissingPlayers() {
+        if (playerCount < 4) {
+            rightSectionPanel.setDead(true);
+        }
+        if (playerCount < 3) {
+            topSectionPanel.setDead(true);
+        }
     }
     
     /** Updates all visible sections without any additional logic. */
@@ -100,6 +114,10 @@ public class GamePanel extends JPanel {
         centerSectionPanel.refreshBalance();
         centerSectionPanel.refreshCommunityCards();
         centerSectionPanel.refreshPot();
+        
+        // keep unused player slots dimmed
+        if (playerCount < 4) rightSectionPanel.setDead(true);
+        if (playerCount < 3) topSectionPanel.setDead(true);
     }
 
     /** Refresh all visible sections. */
