@@ -53,8 +53,8 @@ public class HandEvaluator {
      */
     public static String determineWinner(List<Player> players, List<logicCard> community, Pot pot) {
         Map<Player, HandValue> handMap = new HashMap<>();
-        HandValue bestHand = null;
 
+        // 각 플레이어의 베스트 핸드를 계산
         for (Player player : players) {
             if (player.isFolded()) continue;
 
@@ -64,42 +64,84 @@ public class HandEvaluator {
             handMap.put(player, hv);
 
             System.out.println(player.getName() + "의 족보: " + hv.rank);
-
-            if (bestHand == null || hv.compareTo(bestHand) > 0) {
-                bestHand = hv;
-            }
         }
-
-        // 동점자 판별 및 수집
-        List<Player> winners = new ArrayList<>();
-        for (Map.Entry<Player, HandValue> entry : handMap.entrySet()) {
-            if (entry.getValue().compareTo(bestHand) == 0) {
-                winners.add(entry.getKey());
-            }
-        }
-
-        if (!winners.isEmpty()) {
-            int total = pot.getTotal();
-            int splitAmount = total / winners.size();
-            int remainder = total % winners.size();
-            StringBuilder sb = new StringBuilder();
-            sb.append("승자: ");
-            for (int i = 0; i < winners.size(); i++) {
-                Player winner = winners.get(i);
-                int payout = splitAmount + (i < remainder ? 1 : 0);
-                winner.setChips(winner.getChips() + payout);
-                sb.append(winner.getName());
-                if (i < winners.size() - 1) sb.append(", ");
-            }
-            sb.append(" (" + bestHand.rank + ")\n");
-            sb.append("총 팟 $" + total + "을 나누어 가집니다.");
-            System.out.println("\n" + sb);
-            return sb.toString();
-        } else {
+        
+        if (handMap.isEmpty()) {
             String msg = "모든 플레이어가 폴드하였습니다. 승자 없음.";
             System.out.println("\n" + msg);
             return msg;
         }
+
+        // 메인 팟 승자 계산
+        HandValue bestMain = null;
+        for (HandValue hv : handMap.values()) {
+            if (bestMain == null || hv.compareTo(bestMain) > 0) bestMain = hv;
+        }
+
+        List<Player> mainWinners = new ArrayList<>();
+        for (Map.Entry<Player, HandValue> e : handMap.entrySet()) {
+            if (e.getValue().compareTo(bestMain) == 0) mainWinners.add(e.getKey());
+        }
+
+        Map<Player, Integer> payouts = new HashMap<>();
+        int mainPot = pot.getSmallPot();
+        if (mainPot > 0) {
+            int split = mainPot / mainWinners.size();
+            int rem = mainPot % mainWinners.size();
+            for (int i = 0; i < mainWinners.size(); i++) {
+                Player w = mainWinners.get(i);
+                payouts.put(w, payouts.getOrDefault(w, 0) + split + (i < rem ? 1 : 0));
+            }
+        }
+
+        // 사이드 팟이 있을 경우 계산
+        if (pot.getBigPot() > 0) {
+            int threshold = pot.getMinAllIn();
+            List<Player> sideParticipants = new ArrayList<>();
+            for (Player p : players) {
+                if (!p.isFolded() && pot.getContribution(p) > threshold) {
+                    sideParticipants.add(p);
+                }
+            }
+            HandValue bestSide = null;
+            for (Player p : sideParticipants) {
+                HandValue hv = handMap.get(p);
+                if (bestSide == null || hv.compareTo(bestSide) > 0) bestSide = hv;
+            }
+
+            List<Player> sideWinners = new ArrayList<>();
+            for (Player p : sideParticipants) {
+                if (handMap.get(p).compareTo(bestSide) == 0) sideWinners.add(p);
+            }
+
+            int sidePot = pot.getBigPot();
+            int split = sidePot / sideWinners.size();
+            int rem = sidePot % sideWinners.size();
+            for (int i = 0; i < sideWinners.size(); i++) {
+                Player w = sideWinners.get(i);
+                payouts.put(w, payouts.getOrDefault(w, 0) + split + (i < rem ? 1 : 0));
+            }
+        }
+
+        // 칩 지급 및 메시지 생성
+        StringBuilder sb = new StringBuilder();
+        sb.append("승자: ");
+        boolean first = true;
+        for (Map.Entry<Player, Integer> e : payouts.entrySet()) {
+            Player p = e.getKey();
+            p.setChips(p.getChips() + e.getValue());
+            if (!first) sb.append(", ");
+            sb.append(p.getName());
+            first = false;
+        }
+        sb.append("\n");
+        sb.append("메인 팟 $" + pot.getSmallPot());
+        if (pot.getBigPot() > 0) {
+            sb.append(" | 사이드 팟 $" + pot.getBigPot());
+        }
+
+        System.out.println("\n" + sb);
+        return sb.toString();
     }
 
     /**

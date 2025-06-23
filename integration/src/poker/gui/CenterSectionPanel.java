@@ -1,6 +1,7 @@
 package poker.gui;
 
 import poker.logic.GameManager;
+import poker.logic.Pot;
 import poker.logic.logicCard;
 import javax.swing.*;
 import java.awt.*;
@@ -123,10 +124,13 @@ public class CenterSectionPanel extends BaseSectionPanel{
     }
     
     public void refreshPot() {
-        int total = 0;
-        for (poker.logic.Player p : gameManager.getPlayers()) {
-            total += p.getCurrentBet();
+        Pot pot = gameManager.getPot();
+        int main = pot.getSmallPot();
+        int side = pot.getBigPot();
+        if (side > 0) {
+            potLabel.setText("Pot: $" + main + "\n Side: $" + side);
+        } else {
+            potLabel.setText("Pot: $" + main);
         }
-        potLabel.setText("Pot: $" + total);
     }
 }
