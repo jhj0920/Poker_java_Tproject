@@ -19,6 +19,7 @@ public class LeftSectionPanel extends BaseSectionPanel{
     private final GameManager gameManager;
     private final int playerIndex;
     private PlayerCardPanel playerCardPanel;
+    private JPanel cardContainer;
     private JLabel balanceLabel;
 
     public LeftSectionPanel(GameManager gameManager, int playerIndex) {
@@ -40,10 +41,10 @@ public class LeftSectionPanel extends BaseSectionPanel{
         
         // Add player cards panel
         playerCardPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
-        JPanel playerCards = playerCardPanel.initializeCards();
-        playerCards.setPreferredSize(PANEL_SIZE);
-        playerCards.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
-        player1CardsContainer.add(playerCards);
+        cardContainer = playerCardPanel.initializeCards();
+        cardContainer.setPreferredSize(PANEL_SIZE);
+        cardContainer.setAlignmentX(Component.CENTER_ALIGNMENT); // Center alignment
+        player1CardsContainer.add(cardContainer);
        
 		
 		add(player1CardsContainer);
@@ -63,6 +64,11 @@ public class LeftSectionPanel extends BaseSectionPanel{
     /** Sets this player's cards face down. */
     public void hideCards() {
         playerCardPanel.setFaceDown();
+    }
+
+    /** Highlights this player's cards when it is their turn. */
+    public void setHighlighted(boolean on) {
+        playerCardPanel.setHighlighted(on);
     }
     
     /**

@@ -50,7 +50,9 @@ public class GameGUI {
                 }
             }
             case "TURN" -> {
-                // not yet used
+                if (parts.length >= 2) {
+                    handleTurn(parts[1]);
+                }
             }
             case "PLAYER_ACTION" -> {
                 // could display in chat panel
@@ -82,6 +84,14 @@ public class GameGUI {
         p.setCurrentBet(bet);
         p.setChips(chips);
     }
+
+    private void handleTurn(String player) {
+        Integer idx = nameToIndex.get(player);
+        if (idx != null) {
+            panel.highlightTurn(idx);
+        }
+    }
+
 
     private Player getPlayer(String name) {
         Integer idx = nameToIndex.get(name);

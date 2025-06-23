@@ -14,6 +14,11 @@ public class GameSession {
     private final Map<ClientHandler, Player> playerMap = new HashMap<>();
     private final List<ClientHandler> handlers;
     private int turnIndex = 0;
+    private int smallBlindIndex;
+    private int bigBlindIndex;
+    private static final int SMALL_BLIND = 50;
+    private static final int BIG_BLIND = 100;
+    private final Random random = new Random();
 
     public GameSession(List<ClientHandler> handlers) {
     	this.handlers = new ArrayList<>(handlers);
@@ -26,6 +31,7 @@ public class GameSession {
         gameManager = new GameManager(players);
         bettingManager = new BettingRoundManager(gameManager);
         gameManager.startNewRound();
+        setupBlinds();
     }
 
     /** Handle an action command from a client. */
@@ -87,6 +93,17 @@ public class GameSession {
     private void broadcastTurn() {
         String name = handlers.get(turnIndex).getPlayer().getName();
         broadcast("TURN " + name);
+    }
+    
+    private void setupBlinds() {
+        smallBlindIndex = random.nextInt(handlers.size());
+        bigBlindIndex = (smallBlindIndex + 1) % handlers.size();
+        turnIndex = (bigBlindIndex + 1) % handlers.size();
+
+        Player sbPlayer = handlers.get(smallBlindIndex).getPlayer();
+        Player bbPlayer = handlers.get(bigBlindIndex).getPlayer();
+        bettingManager.raise(sbPlayer, SMALL_BLIND);
+        bettingManager.raise(bbPlayer, BIG_BLIND);
     }
 
     private void nextTurn() {

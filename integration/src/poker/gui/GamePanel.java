@@ -104,7 +104,14 @@ public class GamePanel extends JPanel {
     public void refreshAll() {
         refreshUI();
     }
-
+    
+    /** Highlight the cards for the given player index. */
+    public void highlightTurn(int playerIdx) {
+        leftSectionPanel.setHighlighted(playerIdx == 0);
+        topSectionPanel.setHighlighted(playerIdx == 1);
+        rightSectionPanel.setHighlighted(playerIdx == 2);
+        bottomSectionPanel.setHighlighted(playerIdx == 3);
+    }
 
 
     /**

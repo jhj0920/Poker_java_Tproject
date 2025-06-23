@@ -21,6 +21,7 @@ public class TopSectionPanel extends BaseSectionPanel {
     private final GameManager gameManager;
     private final int playerIndex;
     private PlayerCardPanel playerCardPanel;
+    private JPanel cardContainer;
     private JLabel balanceLabel;
 
     public TopSectionPanel(GameManager gameManager, int playerIndex) {
@@ -39,7 +40,8 @@ public class TopSectionPanel extends BaseSectionPanel {
 
         // Add player 2 cards panel
         playerCardPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
-        cardBalanceContainer.add(playerCardPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(0, 2));
+        cardContainer = playerCardPanel.initializeCards();
+        cardBalanceContainer.add(cardContainer, GridBagConstraintsFactory.createDefaultConstraints(0, 2));
         
         add(cardBalanceContainer, GridBagConstraintsFactory.createConstraints(
                 1, 0, GridBagConstraints.CENTER, 0.0, 0.0, GridBagConstraints.BOTH
@@ -61,6 +63,11 @@ public class TopSectionPanel extends BaseSectionPanel {
     /** Sets the player's cards face down. */
     public void hideCards() {
         playerCardPanel.setFaceDown();
+    }
+
+    /** Highlights this player's cards when it is their turn. */
+    public void setHighlighted(boolean on) {
+        playerCardPanel.setHighlighted(on);
     }
     
     private JPanel createBalancePanel() {

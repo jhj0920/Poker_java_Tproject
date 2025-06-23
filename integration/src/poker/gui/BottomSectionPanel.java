@@ -20,6 +20,7 @@ public class BottomSectionPanel extends BaseSectionPanel {
     private final PrintWriter out;
     private final int playerIndex;
     private PlayerCardPanel playerCardsPanel;
+    private JPanel cardContainer;
 
     public BottomSectionPanel(GameManager gameManager, PrintWriter out, int playerIndex) {
         this.gameManager = gameManager;
@@ -28,7 +29,8 @@ public class BottomSectionPanel extends BaseSectionPanel {
         setLayout(new GridBagLayout());
 
         playerCardsPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
-        add(playerCardsPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(0, 0));
+        cardContainer = playerCardsPanel.initializeCards();
+        add(cardContainer, GridBagConstraintsFactory.createDefaultConstraints(0, 0));
 
         JPanel actions = new JPanel(new GridBagLayout());
         actions.setBackground(TABLE_COLOR);
@@ -69,6 +71,11 @@ public class BottomSectionPanel extends BaseSectionPanel {
     /** Sets this player's cards face down. */
     public void hideCards() {
         playerCardsPanel.setFaceDown();
+    }
+
+    /** Highlights this player's cards when it is their turn. */
+    public void setHighlighted(boolean on) {
+        playerCardsPanel.setHighlighted(on);
     }
 
     private Player getPlayer() {

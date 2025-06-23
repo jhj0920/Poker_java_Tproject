@@ -18,6 +18,10 @@ public class PlayerCardPanel extends CardPanel {
     private String card2Image;
     private Card guiCard1;
     private Card guiCard2;
+    /** Panel containing both card labels for easy highlighting. */
+    private JPanel cardGroup;
+    /** Outer container returned by {@code initializeCards()}. */
+    private JPanel cardPanel;
 
     public PlayerCardPanel(String card1Image, String card2Image, Color backgroundColor) {
         super(backgroundColor);
@@ -28,10 +32,10 @@ public class PlayerCardPanel extends CardPanel {
 
     @Override
     protected JPanel initializeCards() {
-        JPanel cardPanel = new JPanel();
+        cardPanel = new JPanel();
         cardPanel.setBackground(backgroundColor);
 
-        JPanel cardGroup = new JPanel();
+        cardGroup = new JPanel();
         cardGroup.setBackground(backgroundColor);
         cardPanel.add(cardGroup);
 
@@ -70,7 +74,16 @@ public class PlayerCardPanel extends CardPanel {
         return guiCard1.isFaceUp() && guiCard2.isFaceUp();
     }
 
-
+    /** Toggle a red highlight border around the cards. */
+    public void setHighlighted(boolean on) {
+        if (cardGroup != null) {
+            if (on) {
+                cardGroup.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+            } else {
+                cardGroup.setBorder(null);
+            }
+        }
+    }
 
     /**
 	 * Converts a poker logic card to a string representation for the GUI.
