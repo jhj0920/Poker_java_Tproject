@@ -62,10 +62,12 @@ public class BottomSectionPanel extends BaseSectionPanel {
     }
     
     public void refreshCards() {
-    	var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
+        var player = gameManager.getPlayers().get(playerIndex);
+        var cards = player.getHand().getCards();
         if (cards.size() >= 2) {
         	playerCardsPanel.updateCards(cards.get(0), cards.get(1));
         }
+        playerCardsPanel.setDead(player.isFolded() || player.getChips() <= 0);
 	}
     
     /** Sets this player's cards face down. */

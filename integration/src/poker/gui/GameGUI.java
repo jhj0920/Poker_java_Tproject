@@ -56,6 +56,14 @@ public class GameGUI {
             }
             case "PLAYER_ACTION" -> {
                 // could display in chat panel
+                if (parts.length >= 3 && "FOLD".equals(parts[2])) {
+                    getPlayer(parts[1]).fold();
+                }
+            }
+            case "WINNER" -> {
+                String msg = rest.substring(7);
+                JOptionPane.showMessageDialog(frame, msg, "Result", JOptionPane.INFORMATION_MESSAGE);
+                panel.hideAllCards();
             }
         }
         SwingUtilities.invokeLater(panel::refreshAll);
@@ -64,7 +72,7 @@ public class GameGUI {
     private void handleHand(String player, String cards) {
         myName = player; // each client only receives their own hand
         Player p = getPlayer(player);
-        p.getHand().clear();
+        p.resetForNewRound();
         for (logicCard c : parseCards(cards)) {
             p.getHand().addCard(c);
         }

@@ -57,7 +57,9 @@ public class GameSession {
         } else {
             broadcast("PLAYER_ACTION " + sender.getPlayer().getName() + " " + action + (action.equals("CALL")||action.equals("FOLD")?"":" " + broadcastAmount));
             broadcastBets();
-            nextTurn();
+            if (!checkProgress()) {
+                nextTurn();
+            }
         }
     }
 
@@ -112,8 +114,55 @@ public class GameSession {
     }
 
     private void nextTurn() {
-        turnIndex = (turnIndex + 1) % handlers.size();
+        for (int i = 0; i < handlers.size(); i++) {
+            turnIndex = (turnIndex + 1) % handlers.size();
+            if (!handlers.get(turnIndex).getPlayer().isFolded()) {
+                break;
+            }
+        }
         broadcastTurn();
+    }
+    
+    private boolean checkProgress() {
+        if (bettingManager.isOnlyOnePlayerRemaining()) {
+            Player winner = null;
+            for (Player pl : gameManager.getPlayers()) {
+                if (!pl.isFolded()) { winner = pl; break; }
+            }
+            if (winner != null) {
+                int total = gameManager.getPot().getTotal();
+                winner.setChips(winner.getChips() + total);
+                broadcast("WINNER " + winner.getName() + " wins $" + total);
+            }
+            startNewRound();
+            return true;
+        }
+
+        if (bettingManager.isRoundComplete()) {
+            gameManager.nextPhase();
+            for (Player pl : gameManager.getPlayers()) {
+                pl.setCurrentBet(0);
+            }
+            bettingManager.reset();
+            if (gameManager.getState() == GameState.SHOWDOWN) {
+                String result = HandEvaluator.determineWinner(gameManager.getPlayers(),
+                        gameManager.getCommunityCards(), gameManager.getPot());
+                broadcast("WINNER " + result.replace('\n', ' '));
+                startNewRound();
+            } else {
+                broadcastCommunity();
+                broadcastBets();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void startNewRound() {
+        gameManager.startNewRound();
+        bettingManager.reset();
+        setupBlinds();
+        broadcastInitialState();
     }
 
     private String encodeCards(List<logicCard> cards) {

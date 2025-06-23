@@ -165,4 +165,32 @@ public class BettingRoundManager {
         notifyUpdate();
         return null;
     }
+    
+    /** Returns true if only one player has not folded. */
+    public boolean isOnlyOnePlayerRemaining() {
+        int active = 0;
+        for (Player p : gameManager.getPlayers()) {
+            if (!p.isFolded()) active++;
+        }
+        return active <= 1;
+    }
+
+    /**
+     * Checks whether the betting round is complete.
+     * A round is complete when all non-folded players have matched the
+     * current bet (or are all-in).
+     */
+    public boolean isRoundComplete() {
+        int active = 0;
+        for (Player p : gameManager.getPlayers()) {
+            if (p.isFolded()) continue;
+            active++;
+            int bet = bets.getOrDefault(p, 0);
+            if (bet < currentBet && p.getChips() > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

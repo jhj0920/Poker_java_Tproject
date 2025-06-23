@@ -22,6 +22,7 @@ public class PlayerCardPanel extends CardPanel {
     private JPanel cardGroup;
     /** Outer container returned by {@code initializeCards()}. */
     private JPanel cardPanel;
+    private boolean dead;
 
     public PlayerCardPanel(String card1Image, String card2Image, Color backgroundColor) {
         super(backgroundColor);
@@ -84,6 +85,17 @@ public class PlayerCardPanel extends CardPanel {
             }
         }
     }
+    
+    /** Dim the cards to show this player is out. */
+    public void setDead(boolean on) {
+        this.dead = on;
+        if (cardGroup != null) {
+            cardGroup.setBackground(on ? Color.DARK_GRAY : backgroundColor);
+        }
+    }
+
+    /** @return true if the panel is currently dimmed. */
+    public boolean isDead() { return dead; }
 
     /**
 	 * Converts a poker logic card to a string representation for the GUI.

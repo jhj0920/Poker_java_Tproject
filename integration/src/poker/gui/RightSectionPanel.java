@@ -50,7 +50,8 @@ public class RightSectionPanel extends BaseSectionPanel {
 	}
     
     public void refreshCards(boolean showCards) {
-        var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
+        var player = gameManager.getPlayers().get(playerIndex);
+        var cards = player.getHand().getCards();
         if (cards.size() >= 2) {
         	if (showCards) {
                 playerCardPanel.updateCards(cards.get(0), cards.get(1));
@@ -58,6 +59,7 @@ public class RightSectionPanel extends BaseSectionPanel {
                 playerCardPanel.setFaceDown();
             }
         }
+        playerCardPanel.setDead(player.isFolded() || player.getChips() <= 0);
     }
     
     /** Sets this player's cards face down. */
