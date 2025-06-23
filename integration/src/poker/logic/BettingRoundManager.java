@@ -17,6 +17,7 @@ public class BettingRoundManager {
     private int currentBet;
     private int lastRaiseAmount;
     private final Map<Player, Integer> bets = new HashMap<>();
+    private Runnable updateCallback;
 
     /**
      * Constructs a manager used by the GUI. The static runBettingRound method
@@ -26,6 +27,17 @@ public class BettingRoundManager {
     public BettingRoundManager(GameManager gameManager) {
         this.gameManager = gameManager;
         reset();
+    }
+    
+    /** Sets a callback invoked whenever the betting state updates. */
+    public void setUpdateCallback(Runnable updateCallback) {
+        this.updateCallback = updateCallback;
+    }
+
+    private void notifyUpdate() {
+        if (updateCallback != null) {
+            updateCallback.run();
+        }
     }
 
     /** Resets internal state for a new round. */
@@ -74,6 +86,7 @@ public class BettingRoundManager {
         player.setChips(player.getChips() - toCall);
         bets.put(player, bets.get(player) + toCall);
         player.setCurrentBet(bets.get(player));
+        notifyUpdate();
         return null;
     }
 
@@ -101,6 +114,7 @@ public class BettingRoundManager {
         player.setChips(player.getChips() - raiseAmount);
         bets.put(player, raiseTo);
         player.setCurrentBet(raiseTo);
+        notifyUpdate();
         return null;
     }
 
@@ -111,6 +125,7 @@ public class BettingRoundManager {
      */
     public String fold(Player player) {
         player.fold();
+        notifyUpdate();
         return null;
     }
 
@@ -122,6 +137,7 @@ public class BettingRoundManager {
     public String check(Player player) {
         int toCall = getAmountToCall(player);
         if (toCall == 0) {
+        	notifyUpdate();
             return null;
         }
         return "체크할 수 없습니다. 콜 또는 폴드하세요.";
@@ -146,6 +162,7 @@ public class BettingRoundManager {
             currentBet = totalBetAllIn;
         }
         player.setCurrentBet(totalBetAllIn);
+        notifyUpdate();
         return null;
     }
 

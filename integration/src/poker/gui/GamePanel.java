@@ -93,6 +93,9 @@ public class GamePanel extends JPanel {
         rightSectionPanel.refreshCards();
         topSectionPanel.refreshCards();
         bottomSectionPanel.refreshCards();
+        leftSectionPanel.refreshBalance();
+        rightSectionPanel.refreshBalance();
+        topSectionPanel.refreshBalance();
         centerSectionPanel.refreshCommunityCards();
         centerSectionPanel.refreshPot();
     }

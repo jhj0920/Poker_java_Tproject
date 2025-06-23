@@ -15,13 +15,18 @@ import java.util.Arrays;
  */
 public class CenterSectionPanel extends BaseSectionPanel{
 		private GameManager gameManager; // Reference to the GameManager for game logic
+		private final int playerIndex = 0;
 		private RiverCardPanel riverCardPanel;
 		private JLabel potLabel;
+		private JLabel balanceLabel;
 	
 		private static final Dimension POT_PANEL_SIZE = new Dimension(200, 100);
 	    private static final Font POT_FONT = new Font("Arial", Font.BOLD, 16);
 	    private static final Color POT_COLOR = Color.DARK_GRAY;
 	    private static final Color TEXT_COLOR = Color.WHITE;
+        private static final Dimension BALANCE_PANEL_SIZE = new Dimension(150, 50);
+        private static final Font BALANCE_FONT = new Font("Arial", Font.BOLD, 16);
+        private static final Color BALANCE_COLOR = Color.DARK_GRAY;
 
 	public CenterSectionPanel(GameManager gameManager) {
 		this.gameManager = gameManager; // Initialize the GameManager reference
@@ -49,6 +54,8 @@ public class CenterSectionPanel extends BaseSectionPanel{
 				createPotPanel(),
 				GridBagConstraintsFactory.createConstraints(0, 1, GridBagConstraints.CENTER, 0.0, 0.0, GridBagConstraints.NONE)
 		); // Center the pot panel
+		centerContainer.add(Box.createRigidArea(new Dimension(0, 10)), GridBagConstraintsFactory.createConstraints(0, 2, GridBagConstraints.CENTER, 0.0, 0.0, GridBagConstraints.NONE));
+		centerContainer.add(createBalancePanel(), GridBagConstraintsFactory.createConstraints(0, 3, GridBagConstraints.CENTER, 0.0, 0.0, GridBagConstraints.NONE));
 
 		add(centerContainer, BorderLayout.CENTER); // Add center container to the center section
 	}
@@ -70,6 +77,26 @@ public class CenterSectionPanel extends BaseSectionPanel{
 		potPanel.add(potLabel, GridBagConstraintsFactory.createDefaultConstraints(0, 0));
 
 		return potPanel;
+	}
+	
+    public void refreshBalance() {
+        balanceLabel.setText("Balance: $" + gameManager.getPlayers().get(playerIndex).getChips());
+	}
+
+	private JPanel createBalancePanel() {
+	        RoundedPanel balancePanel = new RoundedPanel(20);
+	        balancePanel.setLayout(new GridBagLayout());
+	        balancePanel.setPreferredSize(BALANCE_PANEL_SIZE);
+	        balancePanel.setBackground(BALANCE_COLOR);
+	
+	        balanceLabel = new JLabel();
+	        balanceLabel.setFont(BALANCE_FONT);
+	        balanceLabel.setForeground(TEXT_COLOR);
+	        balancePanel.add(balanceLabel, GridBagConstraintsFactory.createDefaultConstraints(0, 0));
+	
+	        refreshBalance();
+	
+	        return balancePanel;
 	}
 	
 	/**

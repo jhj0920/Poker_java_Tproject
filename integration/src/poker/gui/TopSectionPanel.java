@@ -13,26 +13,38 @@ import java.awt.*;
  * * @returns A JPanel that displays player cards and a balance panel in the top section of the game GUI.
  */
 public class TopSectionPanel extends BaseSectionPanel {
-    private static final Dimension BALANCE_PANEL_SIZE = new Dimension(150, 50);
-    private static final Font BALANCE_FONT = new Font("Arial", Font.BOLD, 16);
-    private static final Color BALANCE_COLOR = Color.DARK_GRAY;
+    private static final Dimension BALANCE_PANEL_SIZE = new Dimension(80, 25);
+    private static final Font BALANCE_FONT = new Font("Arial", Font.PLAIN, 12);
+    private static final Color BALANCE_COLOR = new Color(0, 0, 0, 150); // Semi-transparent black
     private static final Color TEXT_COLOR = Color.WHITE;
     
     private final GameManager gameManager;
     private final int playerIndex;
     private PlayerCardPanel playerCardPanel;
+    private JLabel balanceLabel;
 
     public TopSectionPanel(GameManager gameManager, int playerIndex) {
         this.gameManager = gameManager;
         this.playerIndex = playerIndex;
         setLayout(new GridBagLayout());
 
+        JPanel cardBalanceContainer = new JPanel();
+        cardBalanceContainer.setLayout(new GridBagLayout());
+        cardBalanceContainer.setBackground(TABLE_COLOR);
+        
+        cardBalanceContainer.add(Box.createRigidArea(new Dimension(0, 10)), GridBagConstraintsFactory.createDefaultConstraints(0, 0));
+        
+        // Add balance panel for Player 2
+        cardBalanceContainer.add(createBalancePanel(), GridBagConstraintsFactory.createDefaultConstraints(0, 1));
+
         // Add player 2 cards panel
         playerCardPanel = new PlayerCardPanel("card_back", "card_back", TABLE_COLOR);
-        add(playerCardPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(1, 0));
+        cardBalanceContainer.add(playerCardPanel.initializeCards(), GridBagConstraintsFactory.createDefaultConstraints(0, 2));
+        
+        add(cardBalanceContainer, GridBagConstraintsFactory.createConstraints(
+                1, 0, GridBagConstraints.CENTER, 0.0, 0.0, GridBagConstraints.BOTH
+                ));
 
-        // Add balance panel
-        add(createBalancePanel(), GridBagConstraintsFactory.createConstraints(1, 0, GridBagConstraints.NORTHEAST, 0.0, 0.0, GridBagConstraints.NONE));
     }
     
     public void refreshCards() {
@@ -48,11 +60,17 @@ public class TopSectionPanel extends BaseSectionPanel {
         balancePanel.setPreferredSize(BALANCE_PANEL_SIZE);
         balancePanel.setBackground(BALANCE_COLOR);
 
-        JLabel balanceLabel = new JLabel("Balance: $1000"); // Example balance, replace with actual game logic
+        balanceLabel = new JLabel();
         balanceLabel.setFont(BALANCE_FONT);
         balanceLabel.setForeground(TEXT_COLOR);
         balancePanel.add(balanceLabel, GridBagConstraintsFactory.createDefaultConstraints(0, 0));
+        
+        refreshBalance();
 
         return balancePanel;
+    }
+    
+    public void refreshBalance() {
+        balanceLabel.setText("$" + gameManager.getPlayers().get(playerIndex).getChips());
     }
 }
