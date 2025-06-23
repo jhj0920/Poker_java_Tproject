@@ -49,6 +49,10 @@ public class PlayerCardPanel extends CardPanel {
 	 * @param card2 The second card to update.
 	 */
     public void updateCards(logicCard card1, logicCard card2) {
+        if (card1 == null || card2 == null) {
+            setFaceDown();
+            return;
+        }
         card1Image = convertCard(card1);
         card2Image = convertCard(card2);
         guiCard1.setFrontCard(card1Image);

@@ -123,6 +123,10 @@ public class CenterSectionPanel extends BaseSectionPanel{
     }
     
     public void refreshPot() {
-        potLabel.setText("Pot: $" + gameManager.getPot().getTotal());
+        int total = 0;
+        for (poker.logic.Player p : gameManager.getPlayers()) {
+            total += p.getCurrentBet();
+        }
+        potLabel.setText("Pot: $" + total);
     }
 }

@@ -51,10 +51,15 @@ public class RiverCardPanel extends CardPanel {
 	 */
     public void updateCards(List<logicCard> cards) {
         cardImages = new ArrayList<>();
-        for (int i = 0; i < guiCards.size() && i < cards.size(); i++) {
-            String img = convertCard(cards.get(i));
-            cardImages.add(img);
-            guiCards.get(i).setFrontCard(img);
+        for (int i = 0; i < guiCards.size(); i++) {
+            if (i < cards.size()) {
+                String img = convertCard(cards.get(i));
+                cardImages.add(img);
+                guiCards.get(i).setFrontCard(img);
+            } else {
+                cardImages.add("card_back");
+                guiCards.get(i).setFaceDown();
+            }
         }
     }
     

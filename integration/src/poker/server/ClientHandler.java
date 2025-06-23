@@ -21,7 +21,7 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
         this.partyManager = partyManager;
         synchronized (ClientHandler.class) {
-            this.player = new Player("Player" + NEXT_ID++, 1000);
+            this.player = new Player("Player" + NEXT_ID++, 10000);
         }
     }
 

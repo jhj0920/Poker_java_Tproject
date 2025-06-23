@@ -20,6 +20,9 @@ public class LobbyFrame extends JFrame {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    
+    private GameGUI gameGui;
+    private volatile boolean inGame = false;
 
     private boolean isLeader = false;
     private int playerCount = 1;
@@ -67,7 +70,11 @@ public class LobbyFrame extends JFrame {
                 try {
                     String line;
                     while ((line = in.readLine()) != null) {
-                        handleServerMessage(line);
+                        if (inGame && gameGui != null) {
+                            gameGui.processServerMessage(line);
+                        } else {
+                            handleServerMessage(line);
+                        }
                     }
                 } catch (IOException e) {
                     logArea.append("Disconnected from server.\n");
@@ -94,10 +101,15 @@ public class LobbyFrame extends JFrame {
             playerCount = Integer.parseInt(line.split(" ")[1]);
             updateStartButton();
         } else if (line.startsWith("GAME_START")) {
-            SwingUtilities.invokeLater(() -> {
-                dispose();
-                GameGUI.main(new String[0]);
-            });
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    dispose();
+                    gameGui = new GameGUI(out);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            inGame = true;
         }
     }
 
