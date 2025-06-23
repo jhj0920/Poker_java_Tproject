@@ -245,13 +245,26 @@ public class HandEvaluator {
     private static List<List<logicCard>> generateFiveCardCombinations(List<logicCard> cards) {
         List<List<logicCard>> combinations = new ArrayList<>();
         int n = cards.size();
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) {
-                List<logicCard> combo = new ArrayList<>();
-                for (int k = 0; k < n; k++) {
-                    if (k != i && k != j) combo.add(cards.get(k));
+        if (n < 5) return combinations;
+
+        // Generate all combinations of 5 cards from the given list
+        // Using a nested loop to select 5 cards from the list
+        // This algorithm is O(n^5) in complexity, which is acceptable for small n (like 7 or 8 cards)
+        for (int a = 0; a < n - 4; a++) {
+            for (int b = a + 1; b < n - 3; b++) {
+                for (int c = b + 1; c < n - 2; c++) {
+                    for (int d = c + 1; d < n - 1; d++) {
+                        for (int e = d + 1; e < n; e++) {
+                            List<logicCard> combo = new ArrayList<>(5);
+                            combo.add(cards.get(a));
+                            combo.add(cards.get(b));
+                            combo.add(cards.get(c));
+                            combo.add(cards.get(d));
+                            combo.add(cards.get(e));
+                            combinations.add(combo);
+                        }
+                    }
                 }
-                combinations.add(combo);
             }
         }
         return combinations;
