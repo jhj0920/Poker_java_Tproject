@@ -37,10 +37,14 @@ public class ClientHandler implements Runnable {
                 // Create a new party
                 if (command.equals("CREATE")) {
                     String partyId = partyManager.createParty();
-                    currentParty = partyManager.getParty(partyId);
-                    currentParty.addPlayer(this); // Add the player to the newly created party
-                    out.println("PARTY_CREATED " + partyId);
-                    System.out.println("Party " + partyId + " created.");
+                    if (partyId == null) {
+                        out.println("ERROR Server full.");
+                    } else {
+                        currentParty = partyManager.getParty(partyId);
+                        currentParty.addPlayer(this); // Add the player to the newly created party
+                        out.println("PARTY_CREATED " + partyId);
+                        System.out.println("Party " + partyId + " created.");
+                    }
                 // Join an existing party
                 } else if (command.equals("JOIN") && tokens.length == 2) {
                     String partyId = tokens[1]; // Get the party ID from the second token
@@ -69,6 +73,7 @@ public class ClientHandler implements Runnable {
                     } else {
                         currentParty.broadcast("GAME_START");
                         System.out.println("Party " + currentParty.getPartyId() + " starting game.");
+                        partyManager.removeParty(currentParty.getPartyId());
                     }
                 } else {
                     out.println("ERROR Invalid command.");

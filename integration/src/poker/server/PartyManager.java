@@ -11,7 +11,10 @@ public class PartyManager {
     // Random number generator for creating unique party IDs
     private final Random random = new Random();
 
-    public String createParty() {
+    public synchronized String createParty() {
+        if (parties.size() >= 10000) {
+            return null; // all possible IDs in use
+        }
         String partyId;
         do {
             partyId = String.format("%04d", random.nextInt(10000));  // 4-digit room ID
