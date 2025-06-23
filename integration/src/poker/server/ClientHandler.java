@@ -95,6 +95,11 @@ public class ClientHandler implements Runnable {
                         }
                         currentParty.getGameSession().handleAction(this, command, amount);
                     }
+                } else if (command.equals("CHAT")) {
+                    if (currentParty != null) {
+                        String msg = input.substring(command.length()).trim();
+                        currentParty.broadcast("CHAT " + player.getName() + ": " + msg);
+                    }
                 } else {
                     out.println("ERROR Invalid command.");
                 }

@@ -26,6 +26,11 @@ public class GameGUI {
         this.out = out;
         this.gameManager = new GameManager(createPlayers());
         this.panel = new GamePanel(gameManager, out);
+        panel.getChatPanel().addSendListener(e -> {
+            if (out != null) {
+                out.println("CHAT " + e.getActionCommand());
+            }
+        });
 
         frame = new JFrame("Texas Hold'em Poker");
         frame.add(panel);
@@ -35,6 +40,11 @@ public class GameGUI {
     }
 
     public void processServerMessage(String line) {
+        if (line.startsWith("CHAT ")) {
+            panel.getChatPanel().appendMessage(line.substring(5));
+            return;
+        }
+
         if (!line.startsWith("GAME")) {
             return;
         }
@@ -55,13 +65,21 @@ public class GameGUI {
                 }
             }
             case "PLAYER_ACTION" -> {
-                // could display in chat panel
-                if (parts.length >= 3 && "FOLD".equals(parts[2])) {
-                    getPlayer(parts[1]).fold();
+                if (parts.length >= 3) {
+                    if ("FOLD".equals(parts[2])) {
+                        getPlayer(parts[1]).fold();
+                    }
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(parts[1]).append(' ').append(parts[2]);
+                    if (parts.length == 4) {
+                        sb.append(' ').append(parts[3]);
+                    }
+                    panel.getChatPanel().appendMessage(sb.toString());
                 }
             }
             case "WINNER" -> {
                 String msg = rest.substring(7);
+                panel.getChatPanel().appendMessage(msg);
                 JOptionPane.showMessageDialog(frame, msg, "Result", JOptionPane.INFORMATION_MESSAGE);
                 panel.hideAllCards();
             }

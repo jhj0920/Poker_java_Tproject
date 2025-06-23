@@ -21,10 +21,11 @@ public class GamePanel extends JPanel {
     private BottomSectionPanel bottomSectionPanel;
     private CenterSectionPanel centerSectionPanel;
     private final PrintWriter out;
+    private ChatPanel chatPanel;
     
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
     private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
-    private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 520, 300, 200); // Position at bottom-left corner
+    private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 470, 300, 200); // Position at bottom-left corner
     
     public GamePanel(GameManager gameManager, PrintWriter out) {
         this.gameManager = gameManager;
@@ -45,7 +46,8 @@ public class GamePanel extends JPanel {
 
         // Add the main content panel to the default layer
         layeredPane.add(setupMainContentPanel(gameManager), JLayeredPane.DEFAULT_LAYER);
-        layeredPane.add(setupChatPanel(), JLayeredPane.PALETTE_LAYER); // Add to a higher layer
+        chatPanel = setupChatPanel();
+        layeredPane.add(chatPanel, JLayeredPane.PALETTE_LAYER); // Add to a higher layer
 
         return layeredPane;
     }
@@ -113,6 +115,10 @@ public class GamePanel extends JPanel {
         bottomSectionPanel.setHighlighted(playerIdx == 3);
     }
 
+    /** Returns the chat panel for appending messages or adding listeners. */
+    public ChatPanel getChatPanel() {
+        return chatPanel;
+    }
 
     /**
 	 * Sets up the chat panel that overlays the main content.
