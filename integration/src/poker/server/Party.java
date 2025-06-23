@@ -12,6 +12,7 @@ public class Party {
     private final List<ClientHandler> players = new ArrayList<>();
     // The first player to create the party becomes the leader
     private ClientHandler leader;
+    private GameSession gameSession;
     private static final int MAX_PLAYERS = 4; // Maximum number of players in a party
 
     public Party(String partyId, PartyManager partyManager) {
@@ -30,6 +31,9 @@ public class Party {
                 leader = player; // first player becomes leader
             }
             broadcast("PLAYER_COUNT " + players.size());
+            if (isFull()) {
+                startGame();
+            }
             return true;
         }
         return false;
@@ -71,6 +75,15 @@ public class Party {
         for (ClientHandler p : players) {
             p.sendMessage(message);
         }
+    }
+    
+    private void startGame() {
+        gameSession = new GameSession(players);
+        broadcast("GAME_START");
+    }
+
+    public GameSession getGameSession() {
+        return gameSession;
     }
 
     public String getPartyId() {

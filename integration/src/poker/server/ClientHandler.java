@@ -1,5 +1,6 @@
 package poker.server;
 import java.io.*;
+import poker.logic.*;
 import java.net.*;
 // Handles client connections and matchmaking in the server for each client
 
@@ -13,10 +14,15 @@ public class ClientHandler implements Runnable {
     private PrintWriter out;
     private BufferedReader in;
     private Party currentParty;
+    private final Player player;
+    private static int NEXT_ID = 1;
 
     public ClientHandler(Socket socket, PartyManager partyManager) {
         this.socket = socket;
         this.partyManager = partyManager;
+        synchronized (ClientHandler.class) {
+            this.player = new Player("Player" + NEXT_ID++, 1000);
+        }
     }
 
     @Override
@@ -73,7 +79,21 @@ public class ClientHandler implements Runnable {
                     } else {
                         currentParty.broadcast("GAME_START");
                         System.out.println("Party " + currentParty.getPartyId() + " starting game.");
-                        partyManager.removeParty(currentParty.getPartyId());
+                    }
+                } else if (command.equals("BET") || command.equals("CALL") || command.equals("RAISE") || command.equals("FOLD")) {
+                    if (currentParty == null || currentParty.getGameSession() == null) {
+                        out.println("ERROR No active game.");
+                    } else {
+                        int amount = 0;
+                        if ((command.equals("BET") || command.equals("RAISE")) && tokens.length >= 2) {
+                            try {
+                                amount = Integer.parseInt(tokens[1]);
+                            } catch (NumberFormatException e) {
+                                out.println("ERROR Invalid amount.");
+                                continue;
+                            }
+                        }
+                        currentParty.getGameSession().handleAction(this, command, amount);
                     }
                 } else {
                     out.println("ERROR Invalid command.");
@@ -111,5 +131,9 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    
+    public Player getPlayer() {
+        return player;
     }
 }
