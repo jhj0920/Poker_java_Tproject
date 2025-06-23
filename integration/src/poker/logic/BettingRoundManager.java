@@ -76,7 +76,7 @@ public class BettingRoundManager {
     public String call(Player player) {
         int toCall = getAmountToCall(player);
         if (toCall == 0) {
-            return "콜할 금액이 없습니다. 체크 또는 레이즈만 가능합니다.";
+            return "콜할 금액이 없습니다. 체크 또는 폴드만 가능합니다.";
         }
         if (toCall > player.getChips()) {
             return "보유한 칩보다 많은 금액을 베팅할 수 없습니다.";

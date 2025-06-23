@@ -99,6 +99,13 @@ public class BottomSectionPanel extends BaseSectionPanel {
 		return button;
 	}
 	
+    /** Advances the game to the next phase and refreshes the UI. */
+    private void advancePhase() {
+        gameManager.nextPhase();
+        bettingManager.reset();
+        if (startCallback != null) startCallback.run();
+    }
+	
     /**
 	 * Action listener for the action buttons (Call, Raise, Fold, All In).
 	 * Handles the button clicks and performs the corresponding actions.
@@ -117,20 +124,20 @@ public class BottomSectionPanel extends BaseSectionPanel {
             switch (actionType) {
 	            case "Call" -> {
 	                error = bettingManager.call(player);
-	                if (error == null && startCallback != null) startCallback.run();
+	                if (error == null) advancePhase();
 	            }
 	            case "Raise" -> showRaiseDialog(player);
 	            case "Fold" -> {
 	                bettingManager.fold(player);
-	                if (startCallback != null) startCallback.run();
+	                advancePhase();
 	            }
 	            case "Check" -> {
 	                error = bettingManager.check(player);
-	                if (error == null && startCallback != null) startCallback.run();
+	                if (error == null) advancePhase();
 	            }
 	            case "All In" -> {
 	                error = bettingManager.allIn(player);
-	                if (error == null && startCallback != null) startCallback.run();
+	                if (error == null) advancePhase();
 	            }
 	            default -> throw new IllegalArgumentException("Unknown action type: " + actionType);
 	        }
@@ -189,7 +196,7 @@ public class BottomSectionPanel extends BaseSectionPanel {
                 int raiseTo = bettingManager.getCurrentBet() + raiseAmount;
                 String err = bettingManager.raise(player, raiseTo);
                 if (err == null) {
-                    if (startCallback != null) startCallback.run();
+                	advancePhase();
                     raiseDialog.dispose();
                 } else {
                     JOptionPane.showMessageDialog(raiseDialog, err, "Invalid Action", JOptionPane.WARNING_MESSAGE);
