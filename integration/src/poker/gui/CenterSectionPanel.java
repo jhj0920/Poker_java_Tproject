@@ -116,6 +116,12 @@ public class CenterSectionPanel extends BaseSectionPanel{
         updateCommunityCards();
     }
     
+
+    /** Sets all community cards face down. */
+    public void hideCommunityCards() {
+        riverCardPanel.setFaceDown();
+    }
+    
     public void refreshPot() {
         potLabel.setText("Pot: $" + gameManager.getPot().getTotal());
     }

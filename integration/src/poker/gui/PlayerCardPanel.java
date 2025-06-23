@@ -54,6 +54,19 @@ public class PlayerCardPanel extends CardPanel {
         guiCard1.setFrontCard(card1Image);
         guiCard2.setFrontCard(card2Image);
     }
+    
+    /** Sets both cards to show their backs. */
+    public void setFaceDown() {
+        guiCard1.setFaceDown();
+        guiCard2.setFaceDown();
+    }
+    
+    /** @return true if the cards are currently face up. */
+    public boolean areCardsFaceUp() {
+        return guiCard1.isFaceUp() && guiCard2.isFaceUp();
+    }
+
+
 
     /**
 	 * Converts a poker logic card to a string representation for the GUI.

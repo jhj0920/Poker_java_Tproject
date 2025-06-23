@@ -49,11 +49,20 @@ public class LeftSectionPanel extends BaseSectionPanel{
 		add(player1CardsContainer);
 	}
     
-    public void refreshCards() {
+    public void refreshCards(boolean showCards) {
         var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
         if (cards.size() >= 2) {
+        	if (showCards) {
                 playerCardPanel.updateCards(cards.get(0), cards.get(1));
+            } else {
+                playerCardPanel.setFaceDown();
+            }
         }
+    }
+    
+    /** Sets this player's cards face down. */
+    public void hideCards() {
+        playerCardPanel.setFaceDown();
     }
     
     /**

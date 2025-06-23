@@ -57,6 +57,14 @@ public class RiverCardPanel extends CardPanel {
             guiCards.get(i).setFrontCard(img);
         }
     }
+    
+    /** Sets all river cards to show their backs. */
+    public void setFaceDown() {
+        for (Card c : guiCards) {
+            c.setFaceDown();
+        }
+    }
+
 
     /**
 	 * Converts a poker.logic.Card object to a string representation for the card image.

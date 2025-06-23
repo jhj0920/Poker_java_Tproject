@@ -59,4 +59,18 @@ public class Card extends JLabel {
             revalidate();
             repaint();
     }
+    
+    /** Sets this card to show the back image. */
+    public void setFaceDown() {
+            this.cardLabel.setIcon(CardImageLoader.getCard("card_back"));
+            this.isFaceUp = false;
+            revalidate();
+            repaint();
+    }
+
+    /** @return true if the card is currently face up. */
+    public boolean isFaceUp() {
+            return isFaceUp;
+    }
+
 }

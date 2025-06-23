@@ -1,7 +1,9 @@
 package poker.gui;
 
 import poker.logic.GameManager;
+import poker.logic.GameState;
 import poker.logic.BettingRoundManager;
+import poker.logic.HandEvaluator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +22,8 @@ public class GamePanel extends JPanel {
     private BottomSectionPanel bottomSectionPanel;
     private CenterSectionPanel centerSectionPanel;
     private BettingRoundManager bettingManager;
-	
+    private boolean showdownHandled = false;
+    private GameState lastState = GameState.WAITING;	
     private static final Color TABLE_COLOR = new Color(0, 128, 0); // Green color for the poker table
     private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
     private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 520, 300, 200); // Position at bottom-left corner
@@ -86,13 +89,12 @@ public class GamePanel extends JPanel {
         return mainContentPanel;
     }
     
-    /**
-     * Refreshes all sections of the game panel.
-     */
-    public void refreshAll() {
-        leftSectionPanel.refreshCards();
-        rightSectionPanel.refreshCards();
-        topSectionPanel.refreshCards();
+    /** Updates all visible sections without any additional logic. */
+    private void refreshUI() {
+        boolean showOpponents = gameManager.getState() == GameState.SHOWDOWN;
+        leftSectionPanel.refreshCards(showOpponents);
+        rightSectionPanel.refreshCards(showOpponents);
+        topSectionPanel.refreshCards(showOpponents);
         bottomSectionPanel.refreshCards();
         leftSectionPanel.refreshBalance();
         rightSectionPanel.refreshBalance();
@@ -101,6 +103,55 @@ public class GamePanel extends JPanel {
         centerSectionPanel.refreshCommunityCards();
         centerSectionPanel.refreshPot();
     }
+
+    /**
+     * Refreshes all sections and checks for showdown to determine the winner.
+     */
+    public void refreshAll() {
+        GameState state = gameManager.getState();
+        if (state == GameState.PREFLOP && lastState != GameState.PREFLOP) {
+            leftSectionPanel.hideCards();
+            rightSectionPanel.hideCards();
+            topSectionPanel.hideCards();
+            centerSectionPanel.hideCommunityCards();
+        }
+        refreshUI();
+        if (state == GameState.SHOWDOWN && !showdownHandled) {
+            showdownHandled = true;
+            SwingUtilities.invokeLater(this::handleShowdown);
+        }
+        lastState = state;
+    }
+
+    /** Handles the showdown phase and prompts to start a new round. */
+    private void handleShowdown() {
+        String result = HandEvaluator.determineWinner(gameManager.getPlayers(),
+                gameManager.getCommunityCards(), gameManager.getPot());
+        refreshUI();
+
+        int option = JOptionPane.showOptionDialog(this,
+                result + "\n새 라운드를 시작하시겠습니까?",
+                "Showdown",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"New Round"},
+                "New Round");
+        if (option == 0) {
+            startNewRound();
+        }
+    }
+
+    /** Starts a new round and resets internal state. */
+    private void startNewRound() {
+        gameManager.startNewRound();
+        bettingManager.reset();
+        showdownHandled = false;
+        lastState = GameState.WAITING;
+        refreshAll();
+    }
+
+
 
     /**
 	 * Sets up the chat panel that overlays the main content.

@@ -44,12 +44,14 @@ public class HandEvaluator {
     }
 
     /**
-	 * determineWinner determines the winner of the poker game based on players' hands and community cards.
-	 * @param players 플레이어 목록
-	 * @param community 커뮤니티 카드 목록
-	 * @param pot 판돈 객체
-	 */
-    public static void determineWinner(List<Player> players, List<logicCard> community, Pot pot) {
+     * Determines the winner of the current hand and updates player chips.
+     *
+     * @param players    list of players taking part in the hand
+     * @param community  community cards on the table
+     * @param pot        the pot containing the chips bet this round
+     * @return a human readable summary of the result
+     */
+    public static String determineWinner(List<Player> players, List<logicCard> community, Pot pot) {
         Map<Player, HandValue> handMap = new HashMap<>();
         HandValue bestHand = null;
 
@@ -78,17 +80,22 @@ public class HandEvaluator {
 
         if (!winners.isEmpty()) {
             int splitAmount = pot.getTotal() / winners.size();
-            System.out.print("\n승자: ");
+            StringBuilder sb = new StringBuilder();
+            sb.append("승자: ");
             for (int i = 0; i < winners.size(); i++) {
                 Player winner = winners.get(i);
                 winner.setChips(winner.getChips() + splitAmount);
-                System.out.print(winner.getName());
-                if (i < winners.size() - 1) System.out.print(", ");
+                sb.append(winner.getName());
+                if (i < winners.size() - 1) sb.append(", ");
             }
-            System.out.println(" (" + bestHand.rank + ")");
-            System.out.println("각 승자는 팟의 $" + splitAmount + "을 가져갑니다.");
+            sb.append(" (" + bestHand.rank + ")\n");
+            sb.append("각 승자는 팟의 $" + splitAmount + "을 가져갑니다.");
+            System.out.println("\n" + sb);
+            return sb.toString();
         } else {
-            System.out.println("\n모든 플레이어가 폴드하였습니다. 승자 없음.");
+            String msg = "모든 플레이어가 폴드하였습니다. 승자 없음.";
+            System.out.println("\n" + msg);
+            return msg;
         }
     }
 

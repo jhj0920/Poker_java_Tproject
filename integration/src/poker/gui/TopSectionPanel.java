@@ -47,11 +47,20 @@ public class TopSectionPanel extends BaseSectionPanel {
 
     }
     
-    public void refreshCards() {
+    public void refreshCards(boolean showCards) {
         var cards = gameManager.getPlayers().get(playerIndex).getHand().getCards();
         if (cards.size() >= 2) {
-            playerCardPanel.updateCards(cards.get(0), cards.get(1));
+            if (showCards) {
+                playerCardPanel.updateCards(cards.get(0), cards.get(1));
+            } else {
+                playerCardPanel.setFaceDown();
+            }
         }
+    }
+    
+    /** Sets the player's cards face down. */
+    public void hideCards() {
+        playerCardPanel.setFaceDown();
     }
     
     private JPanel createBalancePanel() {
