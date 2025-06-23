@@ -100,6 +100,14 @@ public class ClientHandler implements Runnable {
                         String msg = input.substring(command.length()).trim();
                         currentParty.broadcast("CHAT " + player.getName() + ": " + msg);
                     }
+                } else if (command.equals("LEAVE")) {
+                    if (currentParty != null) {
+                        currentParty.removePlayer(this);
+                        currentParty = null;
+                        out.println("LEFT");
+                    } else {
+                        out.println("ERROR Not in a party.");
+                    }
                 } else {
                     out.println("ERROR Invalid command.");
                 }

@@ -16,6 +16,7 @@ public class LobbyFrame extends JFrame {
     private JButton createButton;
     private JButton joinButton;
     private JButton startButton;
+    private JButton leaveButton;
 
     private Socket socket;
     private BufferedReader in;
@@ -29,7 +30,7 @@ public class LobbyFrame extends JFrame {
 
     public LobbyFrame(String serverIp, int serverPort) {
         setTitle("Poker Lobby");
-        setSize(600, 400);
+        setSize(700, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -42,6 +43,7 @@ public class LobbyFrame extends JFrame {
         createButton = new JButton("Create Party");
         joinButton = new JButton("Join Party");
         startButton = new JButton("Start Game");
+        leaveButton = new JButton("Leave Party");
         startButton.setEnabled(false);
 
         bottomPanel.add(new JLabel("Party ID:"));
@@ -49,11 +51,13 @@ public class LobbyFrame extends JFrame {
         bottomPanel.add(createButton);
         bottomPanel.add(joinButton);
         bottomPanel.add(startButton);
+        bottomPanel.add(leaveButton);
         add(bottomPanel, BorderLayout.SOUTH);
 
         createButton.addActionListener(e -> sendCommand("CREATE"));
         joinButton.addActionListener(e -> sendCommand("JOIN " + partyField.getText().trim()));
         startButton.addActionListener(e -> sendCommand("START"));
+        leaveButton.addActionListener(e -> sendCommand("LEAVE"));
 
         connectToServer(serverIp, serverPort);
         setVisible(true);
@@ -110,6 +114,10 @@ public class LobbyFrame extends JFrame {
                 e.printStackTrace();
             }
             inGame = true;
+        } else if (line.startsWith("LEFT")) {
+            isLeader = false;
+            playerCount = 1;
+            updateStartButton();
         }
     }
 

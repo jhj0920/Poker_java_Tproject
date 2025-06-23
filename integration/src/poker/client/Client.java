@@ -24,12 +24,7 @@ public class Client {
             System.out.println("[서버] " + in.readLine());
 
             while (true) {
-                if (hasJoinedOrCreated) {
-                    System.out.println("이미 방에 참가하거나 생성했습니다. 더 이상 방을 만들거나 참가할 수 없습니다.");
-                    continue;
-                }
-
-                System.out.print("명령 입력 (예: CREATE 또는 JOIN 1234): ");
+                System.out.print("명령 입력 (예: CREATE, JOIN 1234, 또는 LEAVE): ");
                 String command = scanner.nextLine().trim().toUpperCase();
 
                 // CREATE 또는 JOIN으로 시작하는 명령만 제한
