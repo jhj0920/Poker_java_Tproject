@@ -80,6 +80,7 @@ public class Party {
     private void startGame() {
         gameSession = new GameSession(players);
         broadcast("GAME_START");
+        gameSession.broadcastInitialState();
     }
 
     public GameSession getGameSession() {
