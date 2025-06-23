@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class CenterSectionPanel extends BaseSectionPanel{
 		private GameManager gameManager; // Reference to the GameManager for game logic
-		private final int playerIndex = 0;
+		private final int playerIndex = 3; // Index of the player for whom the balance is displayed (0-based index)
 		private RiverCardPanel riverCardPanel;
 		private JLabel potLabel;
 		private JLabel balanceLabel;

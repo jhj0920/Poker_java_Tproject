@@ -25,10 +25,11 @@ public class GamePanel extends JPanel {
     private static final Dimension FRAME_SIZE = new Dimension(1000, 720);
     private static final Rectangle CHAT_PANEL_BOUNDS = new Rectangle(10, 520, 300, 200); // Position at bottom-left corner
     
-	public GamePanel(GameManager gameManager) {
-		this.gameManager = gameManager;
-		this.bettingManager = new BettingRoundManager(gameManager);
-		setBackground(TABLE_COLOR);
+    public GamePanel(GameManager gameManager) {
+        this.gameManager = gameManager;
+        this.bettingManager = new BettingRoundManager(gameManager);
+        bettingManager.setUpdateCallback(this::refreshAll);
+        setBackground(TABLE_COLOR);
         // Add the layered pane to the GamePanel
         setLayout(new BorderLayout());
         add(setupLayeredPane(gameManager), BorderLayout.CENTER);
@@ -96,6 +97,7 @@ public class GamePanel extends JPanel {
         leftSectionPanel.refreshBalance();
         rightSectionPanel.refreshBalance();
         topSectionPanel.refreshBalance();
+        centerSectionPanel.refreshBalance();
         centerSectionPanel.refreshCommunityCards();
         centerSectionPanel.refreshPot();
     }
