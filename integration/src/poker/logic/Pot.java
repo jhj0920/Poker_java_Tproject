@@ -50,7 +50,7 @@ public class Pot {
             }
         }
 
-        if (!hasAllIn) {
+        if (!hasAllIn|| minAllIn == Integer.MAX_VALUE) {
             // 모든 플레이어가 베팅 가능한 경우 단일 팟으로 처리
             smallPot = total;
             bigPot = 0;
