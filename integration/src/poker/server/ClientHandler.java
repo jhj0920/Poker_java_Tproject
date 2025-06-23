@@ -80,11 +80,16 @@ public class ClientHandler implements Runnable {
                         currentParty.startGame();
                         System.out.println("Party " + currentParty.getPartyId() + " starting game.");
                     }
-                } else if (command.equals("BET") || command.equals("CALL") || command.equals("RAISE") || command.equals("FOLD") || command.equals("ALL_IN") || command.equals("CHECK")) {                	if (currentParty == null || currentParty.getGameSession() == null) {
+                } else if (command.equals("BET") || command.equals("CALL") || command.equals("RAISE") || command.equals("FOLD") || command.equals("ALL_IN") || command.equals("CHECK")) {
+                    if (currentParty == null || currentParty.getGameSession() == null) {
                         out.println("ERROR No active game.");
                     } else {
                         int amount = 0;
-                        if ((command.equals("BET") || command.equals("RAISE") || command.equals("ALL_IN")) && tokens.length >= 2) {
+                        if (command.equals("BET") || command.equals("RAISE")) {
+                            if (tokens.length < 2) {
+                                out.println("ERROR Invalid amount.");
+                                continue;
+                            }
                             try {
                                 amount = Integer.parseInt(tokens[1]);
                             } catch (NumberFormatException e) {

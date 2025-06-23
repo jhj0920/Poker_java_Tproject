@@ -52,7 +52,7 @@ public class GameSession {
             case "CALL" -> error = bettingManager.call(p);
             case "FOLD" -> error = bettingManager.fold(p);
             case "RAISE" -> error = bettingManager.raise(p, amount);
-            case "BET" -> error = bettingManager.raise(p, bettingManager.getCurrentBet() + amount);
+            case "BET" -> error = bettingManager.raise(p, amount);
             case "CHECK" -> error = bettingManager.check(p);
             case "ALL_IN" -> {
                 broadcastAmount = p.getChips();
@@ -111,11 +111,12 @@ public class GameSession {
     
     private void setupBlinds() {
         if (handlers.size() == 2) {
-            // Dealer posts the small blind in heads-up play
+            // Dealer posts the small blind in heads-up play. The dealer
+            // acts first preflop in heads-up, so turnIndex should point to
+            // the dealer rather than the big blind.
             smallBlindIndex = dealerIndex;
             bigBlindIndex = (dealerIndex + 1) % handlers.size();
-            // Big blind acts first preflop
-            turnIndex = bigBlindIndex;
+            turnIndex = dealerIndex;
         } else {
             smallBlindIndex = (dealerIndex + 1) % handlers.size();
             bigBlindIndex = (dealerIndex + 2) % handlers.size();
@@ -161,7 +162,8 @@ public class GameSession {
     private void nextTurn() {
         for (int i = 0; i < handlers.size(); i++) {
             turnIndex = (turnIndex + 1) % handlers.size();
-            if (!handlers.get(turnIndex).getPlayer().isFolded()) {
+            Player next = handlers.get(turnIndex).getPlayer();
+            if (!next.isFolded() && next.getChips() > 0) {
                 break;
             }
         }

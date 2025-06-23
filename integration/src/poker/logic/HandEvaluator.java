@@ -175,23 +175,36 @@ public class HandEvaluator {
 
         Map<logicCard.Rank, Integer> rankMap = getRankCountMap(sorted);
         boolean isFlush = isFlush(sorted);
-        boolean isStraight = isStraight(sorted);
+        int straightHigh = getStraightHigh(sorted);
+        boolean isStraight = straightHigh >= 0;
 
         List<Integer> values = new ArrayList<>();
         for (logicCard c : sorted) values.add(c.getRank().ordinal());
 
-        if (isFlush && isStraight && sorted.get(0).getRank() == logicCard.Rank.ACE)
+        boolean isRoyal = isFlush && isStraight &&
+                straightHigh == logicCard.Rank.ACE.ordinal() &&
+                values.contains(logicCard.Rank.TEN.ordinal());
+
+        if (isRoyal) {
+            values.clear();
+            values.add(straightHigh);
             return new HandValue(HandRank.ROYAL_FLUSH, values);
-        else if (isFlush && isStraight)
+        } else if (isFlush && isStraight) {
+            values.clear();
+            values.add(straightHigh);
             return new HandValue(HandRank.STRAIGHT_FLUSH, values);
+        }
         else if (hasNOfAKind(rankMap, 4))
             return new HandValue(HandRank.FOUR_OF_A_KIND, values);
         else if (hasFullHouse(rankMap))
             return new HandValue(HandRank.FULL_HOUSE, values);
         else if (isFlush)
             return new HandValue(HandRank.FLUSH, values);
-        else if (isStraight)
+        else if (isStraight) {
+            values.clear();
+            values.add(straightHigh);
             return new HandValue(HandRank.STRAIGHT, values);
+        }
         else if (hasNOfAKind(rankMap, 3))
             return new HandValue(HandRank.THREE_OF_A_KIND, values);
         else if (hasTwoPair(rankMap))
@@ -219,11 +232,21 @@ public class HandEvaluator {
      * @return true if the hand contains a straight, false otherwise
      */
     private static boolean isStraight(List<logicCard> cards) {
+        return getStraightHigh(cards) >= 0;
+    }
+
+    /**
+     * Returns the high card ordinal if the list forms a straight or -1 if not.
+     * Handles the special wheel case (A-2-3-4-5).
+     */
+    private static int getStraightHigh(List<logicCard> cards) {
         Set<Integer> ranks = new TreeSet<>();
         for (logicCard c : cards) ranks.add(c.getRank().ordinal());
 
-        if (ranks.contains(12) && ranks.contains(0) && ranks.contains(1) &&
-            ranks.contains(2) && ranks.contains(3)) return true; // A-2-3-4-5
+        if (ranks.contains(12) && ranks.contains(0) && ranks.contains(1)
+                && ranks.contains(2) && ranks.contains(3)) {
+            return 3; // Five-high straight
+        }
 
         List<Integer> list = new ArrayList<>(ranks);
         for (int i = 0; i <= list.size() - 5; i++) {
@@ -234,9 +257,11 @@ public class HandEvaluator {
                     break;
                 }
             }
-            if (straight) return true;
+            if (straight) {
+                return list.get(i + 4);
+            }
         }
-        return false;
+        return -1;
     }
 
     /**
