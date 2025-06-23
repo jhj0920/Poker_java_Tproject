@@ -1,0 +1,8 @@
+# macOS system files
+.DS_Store
+**/.DS_Store
+
+# Eclipse/IDE project files
+*.project
+
+/server/
