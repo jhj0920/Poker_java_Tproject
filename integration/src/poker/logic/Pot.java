@@ -40,17 +40,20 @@ public class Pot {
         for (int c : contributions.values()) total += c;
 
         // 올인한 플레이어 중 최소 베팅 금액을 구한다
-        int minAllIn = Integer.MAX_VALUE;
-        boolean hasAllIn = false;
+        int localMinAllIn = Integer.MAX_VALUE;
+        boolean localHasAllIn = false;
         for (Map.Entry<Player, Integer> e : contributions.entrySet()) {
             Player p = e.getKey();
             if (p.getChips() == 0 && !p.isFolded()) {
-                hasAllIn = true;
-                if (e.getValue() < minAllIn) minAllIn = e.getValue();
+                localHasAllIn = true;
+                if (e.getValue() < localMinAllIn) localMinAllIn = e.getValue();
             }
         }
 
-        if (!hasAllIn|| minAllIn == Integer.MAX_VALUE) {
+        this.hasAllIn = localHasAllIn;
+        this.minAllIn = localHasAllIn ? localMinAllIn : -1;
+
+        if (!localHasAllIn || localMinAllIn == Integer.MAX_VALUE) {
             // 모든 플레이어가 베팅 가능한 경우 단일 팟으로 처리
             smallPot = total;
             bigPot = 0;
@@ -60,7 +63,7 @@ public class Pot {
         // 올인이 존재하면 모든 플레이어의 기여 중 최소 올인 금액까지를 소팟으로 계산
         int calcSmall = 0;
         for (int bet : contributions.values()) {
-            calcSmall += Math.min(bet, minAllIn);
+            calcSmall += Math.min(bet, localMinAllIn);
         }
         smallPot = Math.min(calcSmall, total);
         bigPot = total - smallPot;

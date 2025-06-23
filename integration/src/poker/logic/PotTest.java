@@ -53,4 +53,17 @@ class PotTest {
         assertEquals(120, pot.getSmallPot());
         assertEquals(0, pot.getBigPot());
     }
+    
+    @Test
+    void testAllInDetection() {
+        pot.addChips(player1, 50);
+        pot.addChips(player2, 50);
+        // player3 already has 0 chips (all-in)
+        pot.addChips(player3, 0);
+
+        assertTrue(pot.hasAllIn(), "Should detect an all-in player");
+        assertEquals(0, pot.getMinAllIn());
+        assertEquals(100, pot.getSmallPot());
+        assertEquals(0, pot.getBigPot());
+    }
 }
